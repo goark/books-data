@@ -14,6 +14,7 @@ import (
 	"github.com/spiegel-im-spiegel/books-data/errs"
 )
 
+//PaAPI is class of PA-API
 type PaAPI struct {
 	paapi *amazonproduct.AmazonProductAPI
 }
@@ -21,6 +22,7 @@ type PaAPI struct {
 //PaAPIOptFunc is self-referential function for functional options pattern
 type PaAPIOptFunc func(*amazonproduct.AmazonProductAPI)
 
+//New returns PaAPI instance
 func New(opts ...PaAPIOptFunc) api.API {
 	paapi := &amazonproduct.AmazonProductAPI{Client: &http.Client{}}
 	for _, opt := range opts {
@@ -106,7 +108,7 @@ func (api *PaAPI) LookupBook(id string) (*entity.Book, error) {
 	if !res.Items.Request.IsValid {
 		return nil, errs.Wrap(errs.ErrInvalidAPIResponse, "error in PaAPI.LookupBook() function")
 	}
-	if len(res.Items.Item) < 1 {
+	if len(res.Items.Item) == 0 {
 		return nil, errs.Wrap(errs.ErrNoData, "error in PaAPI.LookupBook() function")
 	}
 	item := res.Items.Item[0]

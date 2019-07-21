@@ -26,11 +26,6 @@ func newPaApiCmd(ui *rwi.RWI) *cobra.Command {
 		Short: "Search for books data by PA-API",
 		Long:  "Search for books data by PA-API",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			//Output format
-			rflag, err := cmd.Flags().GetBool("raw")
-			if err != nil {
-				return errors.Wrap(err, "--raw")
-			}
 			//ASIN code
 			id, err := cmd.Flags().GetString("asin")
 			if err != nil {
@@ -65,16 +60,16 @@ func newPaApiCmd(ui *rwi.RWI) *cobra.Command {
 			}
 			//Description
 			desc := ""
-			if len(args) > 1 {
-				return errors.Wrap(os.ErrInvalid, strings.Join(args, " "))
-			} else if len(args) == 1 {
-				desc = args[0]
-			} else {
+			if pipeFlag {
 				w := &strings.Builder{}
 				if _, err := io.Copy(w, ui.Reader()); err != nil {
 					return debugPrint(ui, errs.Wrap(err, "Cannot read Stdin"))
 				}
 				desc = w.String()
+			} else if len(args) > 1 {
+				return errors.Wrap(os.ErrInvalid, strings.Join(args, " "))
+			} else if len(args) == 1 {
+				desc = args[0]
 			}
 
 			//Creatte API
@@ -84,7 +79,7 @@ func newPaApiCmd(ui *rwi.RWI) *cobra.Command {
 				pa.WithAccessKey(viper.GetString("access-key")),
 				pa.WithSecretKey(viper.GetString("secret-key")),
 			)
-			if rflag {
+			if rawFlag {
 				res, err := paapi.LookupRawData(id)
 				if err != nil {
 					return debugPrint(ui, err)
@@ -126,7 +121,6 @@ func newPaApiCmd(ui *rwi.RWI) *cobra.Command {
 	paapiCmd.Flags().IntP("rating", "r", 0, "Rating of product")
 	paapiCmd.Flags().StringP("review-date", "", "", "Date of review")
 	paapiCmd.Flags().StringP("template", "t", "", "Template file")
-	paapiCmd.Flags().BoolP("raw", "", false, "Output raw data from PA-API")
 
 	return paapiCmd
 }

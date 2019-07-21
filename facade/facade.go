@@ -18,6 +18,8 @@ var (
 )
 var (
 	debugFlag bool //debug flag
+	rawFlag   bool //raw flag
+	pipeFlag  bool //pipe flag
 )
 
 //newRootCmd returns cobra.Command instance for root command
@@ -35,9 +37,12 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 	rootCmd.SetOutput(ui.ErrorWriter()) //Stdout and Stderr
 	rootCmd.AddCommand(newVersionCmd(ui))
 	rootCmd.AddCommand(newPaApiCmd(ui))
+	rootCmd.AddCommand(newOpenBDCmd(ui))
 
 	//global options
-	rootCmd.Flags().BoolVarP(&debugFlag, "debug", "", false, "for debug")
+	rootCmd.PersistentFlags().BoolVarP(&debugFlag, "debug", "", false, "for debug")
+	rootCmd.PersistentFlags().BoolVarP(&rawFlag, "raw", "", false, "Output raw data from openBD")
+	rootCmd.PersistentFlags().BoolVarP(&pipeFlag, "pipe", "", false, "Import description from Stdin")
 
 	return rootCmd
 }
