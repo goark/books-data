@@ -8,11 +8,15 @@ type Num int
 const (
 	ErrNullPointer Num = iota + 1
 	ErrNoCommand
+	ErrInvalidAPIResponse
+	ErrNoData
 )
 
 var errMessage = map[Num]string{
-	ErrNullPointer: "Null reference instance",
-	ErrNoCommand:   "No command",
+	ErrNullPointer:        "Null reference instance",
+	ErrNoCommand:          "No command",
+	ErrInvalidAPIResponse: "Invalid response data from API",
+	ErrNoData:             "No response data",
 }
 
 func (n Num) Error() string {

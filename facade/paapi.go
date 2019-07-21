@@ -1,11 +1,17 @@
 package facade
 
 import (
+	"io"
+	"os"
 	"strings"
 
 	"github.com/mitchellh/go-homedir"
+	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/spiegel-im-spiegel/books-data/api/pa"
+	"github.com/spiegel-im-spiegel/books-data/errs"
+	"github.com/spiegel-im-spiegel/books-data/review"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
@@ -20,7 +26,85 @@ func newPaApiCmd(ui *rwi.RWI) *cobra.Command {
 		Short: "Search for books data by PA-API",
 		Long:  "Search for books data by PA-API",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return ui.OutputErrln(strings.Join(usage, "\n"))
+			//Output format
+			rflag, err := cmd.Flags().GetBool("raw")
+			if err != nil {
+				return errors.Wrap(err, "--raw")
+			}
+			//ASIN code
+			id, err := cmd.Flags().GetString("asin")
+			if err != nil {
+				return errs.Wrap(err, "--asin")
+			}
+			if len(id) == 0 {
+				return errs.Wrap(os.ErrInvalid, "No ASIN code")
+			}
+			//Ratins
+			rating, err := cmd.Flags().GetInt("rating")
+			if err != nil {
+				return errors.Wrap(err, "--rating")
+			}
+			//Date of review
+			dt, err := cmd.Flags().GetString("review-date")
+			if err != nil {
+				return errors.Wrap(err, "--review-date")
+			}
+			//Template data
+			tf, err := cmd.Flags().GetString("template")
+			if err != nil {
+				return errors.Wrap(err, "--template")
+			}
+			var tr io.Reader
+			if len(tf) > 0 {
+				file, err := os.Open(tf)
+				if err != nil {
+					return err
+				}
+				defer file.Close()
+				tr = file
+			}
+			//Description
+			desc := ""
+			if len(args) > 1 {
+				return errors.Wrap(os.ErrInvalid, strings.Join(args, " "))
+			} else if len(args) == 1 {
+				desc = args[0]
+			} else {
+				w := &strings.Builder{}
+				if _, err := io.Copy(w, ui.Reader()); err != nil {
+					return debugPrint(ui, errs.Wrap(err, "Cannot read Stdin"))
+				}
+				desc = w.String()
+			}
+
+			//Creatte API
+			paapi := pa.New(
+				pa.WithMarketplace(viper.GetString("marketplace")),
+				pa.WithAssociateTag(viper.GetString("associate-tag")),
+				pa.WithAccessKey(viper.GetString("access-key")),
+				pa.WithSecretKey(viper.GetString("secret-key")),
+			)
+			if rflag {
+				res, err := paapi.LookupRawData(id)
+				if err != nil {
+					return debugPrint(ui, err)
+				}
+				return debugPrint(ui, ui.WriteFrom(res))
+			}
+			book, err := paapi.LookupBook(id)
+			if err != nil {
+				return debugPrint(ui, err)
+			}
+			b, err := review.New(
+				book,
+				review.WithDate(dt),
+				review.WithRating(rating),
+				review.WithDescription(desc),
+			).Format(tr)
+			if err != nil {
+				return debugPrint(ui, err)
+			}
+			return debugPrint(ui, ui.Output(string(b)))
 		},
 	}
 	//config file option
@@ -36,6 +120,13 @@ func newPaApiCmd(ui *rwi.RWI) *cobra.Command {
 	_ = viper.BindPFlag("associate-tag", paapiCmd.Flags().Lookup("associate-tag"))
 	_ = viper.BindPFlag("access-key", paapiCmd.Flags().Lookup("access-key"))
 	_ = viper.BindPFlag("secret-key", paapiCmd.Flags().Lookup("secret-key"))
+
+	//parameters for review
+	paapiCmd.Flags().StringP("asin", "a", "", "Amazon ASIN code")
+	paapiCmd.Flags().IntP("rating", "r", 0, "Rating of product")
+	paapiCmd.Flags().StringP("review-date", "", "", "Date of review")
+	paapiCmd.Flags().StringP("template", "t", "", "Template file")
+	paapiCmd.Flags().BoolP("raw", "", false, "Output raw data from PA-API")
 
 	return paapiCmd
 }

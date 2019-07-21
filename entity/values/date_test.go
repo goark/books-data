@@ -7,8 +7,8 @@ import (
 )
 
 type ForTestStruct struct {
-	DateTaken    Time `json:"date_taken"`
-	DateImported Time `json:"date_imported"`
+	DateTaken    Date `json:"date_taken"`
+	DateImported Date `json:"date_imported"`
 }
 
 func TestUnmarshal(t *testing.T) {
@@ -18,7 +18,7 @@ func TestUnmarshal(t *testing.T) {
 	"date_imported": "2005-03-25T20:10:13+00:00"
 }
 `
-	res := `{"date_taken":"2005-03-26T09:00:00Z","date_imported":"2005-03-25T20:10:13Z"}`
+	res := `{"date_taken":"2005-03-26","date_imported":"2005-03-25"}`
 	tst := &ForTestStruct{}
 	if err := json.Unmarshal([]byte(data), tst); err != nil {
 		t.Errorf("Unmarshal() = \"%v\", want nil.", err)

@@ -15,7 +15,9 @@ func TestNumError(t *testing.T) {
 		{err: Num(0), str: "unknown error (0)"},
 		{err: ErrNullPointer, str: "Null reference instance"},
 		{err: ErrNoCommand, str: "No command"},
-		{err: Num(3), str: "unknown error (3)"},
+		{err: ErrInvalidAPIResponse, str: "Invalid response data from API"},
+		{err: ErrNoData, str: "No response data"},
+		{err: Num(5), str: "unknown error (5)"},
 	}
 
 	for _, tc := range testCases {
