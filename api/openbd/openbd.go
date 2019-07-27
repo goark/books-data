@@ -9,11 +9,13 @@ import (
 
 	obd "github.com/seihmd/openbd"
 	"github.com/spiegel-im-spiegel/books-data/api"
+	"github.com/spiegel-im-spiegel/books-data/ecode"
 	"github.com/spiegel-im-spiegel/books-data/entity"
 	"github.com/spiegel-im-spiegel/books-data/entity/values"
-	"github.com/spiegel-im-spiegel/books-data/errs"
+	"github.com/spiegel-im-spiegel/errs"
 )
 
+//OpenBD is a api.API class for openBD API
 type OpenBD struct {
 	server *Server //server info.
 }
@@ -30,14 +32,7 @@ func New(cmd CommandType, opts ...ServerOptFunc) api.API {
 	return &OpenBD{server: sv}
 }
 
-//WithProxy returns function for setting Reader
-func WithProxy(url string) ServerOptFunc {
-	return func(sv *Server) {
-		sv.proxyURL = url
-	}
-}
-
-//lookupJSON returns XML data from PA-API
+//lookupJSON returns JSON data from openBD
 func (api *OpenBD) lookupJSON(id string) ([]byte, error) {
 	v := url.Values{
 		"isbn": {id},
@@ -55,19 +50,19 @@ func (api *OpenBD) lookupJSON(id string) ([]byte, error) {
 	return body, nil
 }
 
-//unmarshalXML returns unmarshalled XML data
+//unmarshalJSON returns unmarshalled JSON data
 func unmarshalJSON(jsondata []byte) (*obd.Book, error) {
 	books := []obd.Book{}
 	if err := json.Unmarshal(jsondata, &books); err != nil {
 		return nil, errs.Wrap(err, "error in OpenBD.unmarshalJSON() function")
 	}
 	if len(books) == 0 {
-		return nil, errs.Wrap(errs.ErrNoData, "error in PaAPI.LookupBook() function")
+		return nil, errs.Wrap(ecode.ErrNoData, "error in OpenBD.unmarshalJSON() function")
 	}
 	return &books[0], nil
 }
 
-///LookupRawData returns PA-API raw data
+///LookupRawData returns openBD raw data
 func (api *OpenBD) LookupRawData(id string) (io.Reader, error) {
 	res, err := api.lookupJSON(id)
 	if err != nil {
@@ -76,7 +71,7 @@ func (api *OpenBD) LookupRawData(id string) (io.Reader, error) {
 	return bytes.NewReader(res), nil
 }
 
-///LookupBook returns Book data from PA-API
+///LookupBook returns Book data from openBD
 func (api *OpenBD) LookupBook(id string) (*entity.Book, error) {
 	data, err := api.lookupJSON(id)
 	if err != nil {
@@ -87,7 +82,7 @@ func (api *OpenBD) LookupBook(id string) (*entity.Book, error) {
 		return nil, errs.Wrap(err, "error in OpenBD.LookupBook() function")
 	}
 	if !bd.IsValidData() {
-		return nil, errs.Wrap(errs.ErrInvalidAPIResponse, "error in PaAPI.LookupBook() function")
+		return nil, errs.Wrap(ecode.ErrInvalidAPIResponse, "error in OpenBD.LookupBook() function")
 	}
 
 	book := &entity.Book{

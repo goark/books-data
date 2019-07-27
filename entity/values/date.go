@@ -5,7 +5,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/spiegel-im-spiegel/books-data/errs"
+	"github.com/spiegel-im-spiegel/errs"
 )
 
 //Time is wrapper class of time.Time

@@ -9,9 +9,10 @@ import (
 
 	amazonproduct "github.com/DDRBoxman/go-amazon-product-api"
 	"github.com/spiegel-im-spiegel/books-data/api"
+	"github.com/spiegel-im-spiegel/books-data/ecode"
 	"github.com/spiegel-im-spiegel/books-data/entity"
 	"github.com/spiegel-im-spiegel/books-data/entity/values"
-	"github.com/spiegel-im-spiegel/books-data/errs"
+	"github.com/spiegel-im-spiegel/errs"
 )
 
 //PaAPI is class of PA-API
@@ -106,10 +107,10 @@ func (api *PaAPI) LookupBook(id string) (*entity.Book, error) {
 		return nil, errs.Wrap(err, "error in PaAPI.LookupBook() function")
 	}
 	if !res.Items.Request.IsValid {
-		return nil, errs.Wrap(errs.ErrInvalidAPIResponse, "error in PaAPI.LookupBook() function")
+		return nil, errs.Wrap(ecode.ErrInvalidAPIResponse, "error in PaAPI.LookupBook() function")
 	}
 	if len(res.Items.Item) == 0 {
-		return nil, errs.Wrap(errs.ErrNoData, "error in PaAPI.LookupBook() function")
+		return nil, errs.Wrap(ecode.ErrNoData, "error in PaAPI.LookupBook() function")
 	}
 	item := res.Items.Item[0]
 	book := &entity.Book{

@@ -5,11 +5,10 @@ import (
 	"os"
 	"strings"
 
-	"github.com/pkg/errors"
 	"github.com/spf13/cobra"
 	"github.com/spiegel-im-spiegel/books-data/api/openbd"
-	"github.com/spiegel-im-spiegel/books-data/errs"
 	"github.com/spiegel-im-spiegel/books-data/review"
+	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
@@ -31,17 +30,17 @@ func newOpenBDCmd(ui *rwi.RWI) *cobra.Command {
 			//Ratins
 			rating, err := cmd.Flags().GetInt("rating")
 			if err != nil {
-				return errors.Wrap(err, "--rating")
+				return errs.Wrap(err, "--rating")
 			}
 			//Date of review
 			dt, err := cmd.Flags().GetString("review-date")
 			if err != nil {
-				return errors.Wrap(err, "--review-date")
+				return errs.Wrap(err, "--review-date")
 			}
 			//Template data
 			tf, err := cmd.Flags().GetString("template")
 			if err != nil {
-				return errors.Wrap(err, "--template")
+				return errs.Wrap(err, "--template")
 			}
 			var tr io.Reader
 			if len(tf) > 0 {
@@ -61,7 +60,7 @@ func newOpenBDCmd(ui *rwi.RWI) *cobra.Command {
 				}
 				desc = w.String()
 			} else if len(args) > 1 {
-				return errors.Wrap(os.ErrInvalid, strings.Join(args, " "))
+				return errs.Wrap(os.ErrInvalid, strings.Join(args, " "))
 			} else if len(args) == 1 {
 				desc = args[0]
 			}

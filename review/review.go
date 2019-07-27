@@ -6,9 +6,10 @@ import (
 	"strings"
 	"time"
 
+	"github.com/spiegel-im-spiegel/books-data/ecode"
 	"github.com/spiegel-im-spiegel/books-data/entity"
 	"github.com/spiegel-im-spiegel/books-data/entity/values"
-	"github.com/spiegel-im-spiegel/books-data/errs"
+	"github.com/spiegel-im-spiegel/errs"
 )
 
 const MAX_STAR = 5
@@ -76,7 +77,7 @@ func WithDescription(s string) ReviewOptFunc {
 
 func (r *Review) Format(tr io.Reader) ([]byte, error) {
 	if r == nil {
-		return nil, errs.Wrap(errs.ErrNullPointer, "error in review.Review.Format() function")
+		return nil, errs.Wrap(ecode.ErrNullPointer, "error in review.Review.Format() function")
 	}
 	if tr == nil {
 		b, err := json.Marshal(r)

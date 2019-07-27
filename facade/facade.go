@@ -5,7 +5,8 @@ import (
 	"runtime"
 
 	"github.com/spf13/cobra"
-	"github.com/spiegel-im-spiegel/books-data/errs"
+	"github.com/spiegel-im-spiegel/books-data/ecode"
+	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gocli/exitcode"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
@@ -29,7 +30,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 		Short: "Search for books data",
 		Long:  "Search for books data",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return debugPrint(ui, errs.ErrNoCommand)
+			return debugPrint(ui, ecode.ErrNoCommand)
 		},
 	}
 	rootCmd.SetArgs(args)               //arguments of command-line

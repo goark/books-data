@@ -1,25 +1,29 @@
-package errs
+package ecode
 
-import (
-	"testing"
+import "fmt"
+
+//ECode is error codes for books-data
+type ECode int
+
+const (
+	ErrNullPointer ECode = iota + 1
+	ErrNoCommand
+	ErrInvalidAPIResponse
+	ErrNoData
 )
 
-func TestCause(t *testing.T) {
-	testCases := []struct {
-		err   error
-		cause error
-	}{
-		{err: nil, cause: nil},
-		{err: ErrNullPointer, cause: ErrNullPointer},
-		{err: Wrap(ErrNullPointer, "wrapping error"), cause: ErrNullPointer},
-	}
+var errMessages = map[ECode]string{
+	ErrNullPointer:        "Null reference instance",
+	ErrNoCommand:          "No command",
+	ErrInvalidAPIResponse: "Invalid response data from API",
+	ErrNoData:             "No response data",
+}
 
-	for _, tc := range testCases {
-		res := Cause(tc.err)
-		if res != tc.cause {
-			t.Errorf("Cause in \"%v\" == \"%v\", want \"%v\"", tc.err, res, tc.cause)
-		}
+func (e ECode) Error() string {
+	if s, ok := errMessages[e]; ok {
+		return s
 	}
+	return fmt.Sprintf("unknown error (%d)", int(e))
 }
 
 /* Copyright 2019 Spiegel

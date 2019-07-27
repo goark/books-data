@@ -2,7 +2,6 @@ package openbd
 
 import (
 	"net/http"
-	"net/url"
 )
 
 //CommandType is Type of openBD commands
@@ -29,16 +28,10 @@ func (c CommandType) String() string {
 
 //Server is informations of OpenPGP key server
 type Server struct {
-	cmd      CommandType //Type of openBD commands
-	proxyURL string      //URL of proxy server
+	cmd CommandType //Type of openBD commands
 }
 
 func (s *Server) CreateClient() *Client {
-	if len(s.proxyURL) > 0 {
-		if proxyUrl, err := url.Parse(s.proxyURL); err == nil {
-			return &Client{cmd: s.cmd, client: &http.Client{Transport: &http.Transport{Proxy: http.ProxyURL(proxyUrl)}}}
-		}
-	}
 	return &Client{cmd: s.cmd, client: &http.Client{}}
 }
 

@@ -1,23 +1,23 @@
-package errs
+package ecode
 
 import (
 	"fmt"
 	"testing"
 
-	errors "golang.org/x/xerrors"
+	"github.com/spiegel-im-spiegel/errs"
 )
 
-func TestNumError(t *testing.T) {
+func TestECodeError(t *testing.T) {
 	testCases := []struct {
 		err error
 		str string
 	}{
-		{err: Num(0), str: "unknown error (0)"},
+		{err: ECode(0), str: "unknown error (0)"},
 		{err: ErrNullPointer, str: "Null reference instance"},
 		{err: ErrNoCommand, str: "No command"},
 		{err: ErrInvalidAPIResponse, str: "Invalid response data from API"},
 		{err: ErrNoData, str: "No response data"},
-		{err: Num(5), str: "unknown error (5)"},
+		{err: ECode(5), str: "unknown error (5)"},
 	}
 
 	for _, tc := range testCases {
@@ -25,24 +25,24 @@ func TestNumError(t *testing.T) {
 		if errStr != tc.str {
 			t.Errorf("\"%v\" != \"%v\"", errStr, tc.str)
 		}
-		fmt.Printf("Info(TestNumError): %+v\n", tc.err)
+		fmt.Printf("Info(TestECodeError): %+v\n", tc.err)
 	}
 }
 
-func TestNumErrorEquality(t *testing.T) {
+func TestECodeErrorEquality(t *testing.T) {
 	testCases := []struct {
 		err1 error
 		err2 error
 		res  bool
 	}{
 		{err1: ErrNullPointer, err2: ErrNullPointer, res: true},
-		{err1: ErrNullPointer, err2: Wrap(ErrNullPointer, "wrapping error"), res: false},
+		{err1: ErrNullPointer, err2: errs.Wrap(ErrNullPointer, "wrapping error"), res: false},
 		{err1: ErrNullPointer, err2: nil, res: false},
-		{err1: ErrNullPointer, err2: Num(0), res: false},
+		{err1: ErrNullPointer, err2: ECode(0), res: false},
 	}
 
 	for _, tc := range testCases {
-		res := errors.Is(tc.err1, tc.err2)
+		res := errs.Is(tc.err1, tc.err2)
 		if res != tc.res {
 			t.Errorf("\"%v\" == \"%v\" ? %v, want %v", tc.err1, tc.err2, res, tc.res)
 		}
@@ -59,7 +59,7 @@ func TestWrapError(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		we := Wrap(tc.err, tc.msg)
+		we := errs.Wrap(tc.err, tc.msg)
 		if we.Error() != tc.str {
 			t.Errorf("wrapError.Error() == \"%v\", want \"%v\"", we.Error(), tc.str)
 		}
@@ -68,7 +68,7 @@ func TestWrapError(t *testing.T) {
 }
 
 func TestWrapNilError(t *testing.T) {
-	if we := Wrap(nil, "null error"); we != nil {
+	if we := errs.Wrap(nil, "null error"); we != nil {
 		t.Errorf("Wrap(nil) == \"%v\", want nil.", we)
 	}
 }
@@ -83,7 +83,7 @@ func TestWrapfError(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		we := Wrapf(tc.err, "%v", tc.msg)
+		we := errs.Wrapf(tc.err, "%v", tc.msg)
 		if we.Error() != tc.str {
 			t.Errorf("wrapError.Error() == \"%v\", want \"%v\"", we.Error(), tc.str)
 		}
@@ -92,7 +92,7 @@ func TestWrapfError(t *testing.T) {
 }
 
 func TestWrapfNilError(t *testing.T) {
-	if we := Wrapf(nil, "%v", "null error"); we != nil {
+	if we := errs.Wrapf(nil, "%v", "null error"); we != nil {
 		t.Errorf("Wrapf(nil) == \"%v\", want nil.", we)
 	}
 }
@@ -103,14 +103,14 @@ func TestWrapErrorEquality(t *testing.T) {
 		err2 error
 		res  bool
 	}{
-		{err1: Wrap(ErrNullPointer, "wrapping error"), err2: ErrNullPointer, res: true},
-		{err1: Wrap(ErrNullPointer, "wrapping error"), err2: nil, res: false},
-		{err1: Wrap(ErrNullPointer, "wrapping error"), err2: Num(0), res: false},
-		{err1: Wrap(ErrNullPointer, "wrapping error"), err2: Wrap(Num(0), "wrapping error"), res: false},
+		{err1: errs.Wrap(ErrNullPointer, "wrapping error"), err2: ErrNullPointer, res: true},
+		{err1: errs.Wrap(ErrNullPointer, "wrapping error"), err2: nil, res: false},
+		{err1: errs.Wrap(ErrNullPointer, "wrapping error"), err2: ECode(0), res: false},
+		{err1: errs.Wrap(ErrNullPointer, "wrapping error"), err2: errs.Wrap(ECode(0), "wrapping error"), res: false},
 	}
 
 	for _, tc := range testCases {
-		res := errors.Is(tc.err1, tc.err2)
+		res := errs.Is(tc.err1, tc.err2)
 		if res != tc.res {
 			t.Errorf("\"%v\" == \"%v\" ? %v, want %v", tc.err1, tc.err2, res, tc.res)
 		}

@@ -1,8 +1,8 @@
-project_name: amazon-item
+project_name: books-data
 release:
   github:
     owner: spiegel-im-spiegel
-    name: amazon-item
+    name: books-data
 
 builds:
 -
@@ -21,8 +21,8 @@ builds:
   goarm:
   - "6"
   main: ./
-  ldflags: -s -w -X github.com/spiegel-im-spiegel/amazon-item/product.Version={{ .Version }}
-  binary: amazon-item
+  ldflags: -s -w -X github.com/spiegel-im-spiegel/books-data/facade.Version={{ .Version }}
+  binary: books-data
 
 archive:
   format: tar.gz
