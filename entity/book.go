@@ -23,7 +23,7 @@ func (c Code) String() string {
 //Creator is entity class of creator info.
 type Creator struct {
 	Name string
-	Role string `json:"Role,omitempty"`
+	Role string `json:",omitempty"`
 }
 
 func (c Creator) String() string {
@@ -37,21 +37,21 @@ func (c Creator) String() string {
 type Book struct {
 	ID          string
 	Title       string
-	SubTitle    string `json:"SubTitle,omitempty"`
-	SeriesTitle string `json:"SeriesTitle,omitempty"`
-	URL         string `json:"URL,omitempty"`
+	SubTitle    string `json:",omitempty"`
+	SeriesTitle string `json:",omitempty"`
+	URL         string `json:",omitempty"`
 	Image       struct {
 		URL    string
 		Height uint16
 		Width  uint16
-	} `json:"Image,omitempty"`
-	ProductType     string
+	}
+	ProductType     string `json:",omitempty"`
 	Authors         []string
-	Creators        []Creator `json:"Creators,omitempty"`
+	Creators        []Creator `json:",omitempty"`
 	Publisher       string
 	Codes           []Code
-	PublicationDate values.Date `json:"PublicationDate,omitempty"`
-	LastRelease     values.Date `json:"LastRelease,omitempty"`
+	PublicationDate values.Date
+	LastRelease     values.Date
 	Service         struct {
 		Name string
 		URL  string

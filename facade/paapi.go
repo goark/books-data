@@ -21,7 +21,7 @@ var (
 //newpaapiCmd returns cobra.Command instance for show sub-command
 func newPaApiCmd(ui *rwi.RWI) *cobra.Command {
 	paapiCmd := &cobra.Command{
-		Use:   "paapi",
+		Use:   "paapi [flags] [description]",
 		Short: "Search for books data by PA-API",
 		Long:  "Search for books data by PA-API",
 		RunE: func(cmd *cobra.Command, args []string) error {

@@ -15,7 +15,7 @@ import (
 //newpaapiCmd returns cobra.Command instance for show sub-command
 func newOpenBDCmd(ui *rwi.RWI) *cobra.Command {
 	openBDCmd := &cobra.Command{
-		Use:   "openbd",
+		Use:   "openbd [flags] [description]",
 		Short: "Search for books data by openBD",
 		Long:  "Search for books data by openBD",
 		RunE: func(cmd *cobra.Command, args []string) error {

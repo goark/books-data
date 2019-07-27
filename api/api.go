@@ -6,6 +6,7 @@ import (
 	"github.com/spiegel-im-spiegel/books-data/entity"
 )
 
+//API is interface class  for searching book API
 type API interface {
 	LookupBook(id string) (*entity.Book, error) //Lookup book data by API
 	LookupRawData(id string) (io.Reader, error) //Lookup raw data by API

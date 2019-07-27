@@ -20,7 +20,7 @@ type Review struct {
 	Date        values.Date
 	Rating      int
 	Star        [MAX_STAR]bool
-	Description string
+	Description string `json:",omitempty"`
 }
 
 //LookupOptFunc is self-referential function for functional options pattern
