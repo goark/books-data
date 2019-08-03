@@ -17,7 +17,7 @@ func (c Code) String() string {
 	if len(c.Value) > 0 && len(c.Name) > 0 {
 		return fmt.Sprintf("%v (%v)", c.Value, c.Name)
 	}
-	return c.Name
+	return c.Value
 }
 
 //Creator is entity class of creator info.
@@ -35,6 +35,7 @@ func (c Creator) String() string {
 
 //Book is entity class of information for book
 type Book struct {
+	Type        string
 	ID          string
 	Title       string
 	SubTitle    string `json:",omitempty"`
@@ -64,6 +65,18 @@ func (b *Book) String() string {
 		return ""
 	}
 	return string(res)
+}
+
+//CopyFrom copy from Book instance
+func (b *Book) CopyFrom(src *Book) *Book {
+	if src == nil {
+		return nil
+	}
+	if b == nil {
+		return src
+	}
+	*b = *src
+	return b
 }
 
 /* Copyright 2019 Spiegel

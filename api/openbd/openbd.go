@@ -25,19 +25,24 @@ type ServerOptFunc func(*Server)
 
 //New returns OpenBD instance
 func New(cmd CommandType, opts ...ServerOptFunc) api.API {
-	sv := &Server{cmd: cmd}
+	sv := &Server{svcType: api.TypeOpenBD, cmd: cmd}
 	for _, opt := range opts {
 		opt(sv)
 	}
 	return &OpenBD{server: sv}
 }
 
+//Name returns name of API
+func (a *OpenBD) Name() string {
+	return a.server.svcType.String()
+}
+
 //lookupJSON returns JSON data from openBD
-func (api *OpenBD) lookupJSON(id string) ([]byte, error) {
+func (a *OpenBD) lookupJSON(id string) ([]byte, error) {
 	v := url.Values{
 		"isbn": {id},
 	}
-	resp, err := api.server.CreateClient().Get(v)
+	resp, err := a.server.CreateClient().Get(v)
 	if err != nil {
 		return nil, errs.Wrap(err, "error in OpenBD.lookupJSON() function")
 	}
@@ -63,8 +68,8 @@ func unmarshalJSON(jsondata []byte) (*obd.Book, error) {
 }
 
 ///LookupRawData returns openBD raw data
-func (api *OpenBD) LookupRawData(id string) (io.Reader, error) {
-	res, err := api.lookupJSON(id)
+func (a *OpenBD) LookupRawData(id string) (io.Reader, error) {
+	res, err := a.lookupJSON(id)
 	if err != nil {
 		return nil, err
 	}
@@ -72,8 +77,8 @@ func (api *OpenBD) LookupRawData(id string) (io.Reader, error) {
 }
 
 ///LookupBook returns Book data from openBD
-func (api *OpenBD) LookupBook(id string) (*entity.Book, error) {
-	data, err := api.lookupJSON(id)
+func (a *OpenBD) LookupBook(id string) (*entity.Book, error) {
+	data, err := a.lookupJSON(id)
 	if err != nil {
 		return nil, errs.Wrap(err, "error in OpenBD.LookupBook() function")
 	}
@@ -86,6 +91,7 @@ func (api *OpenBD) LookupBook(id string) (*entity.Book, error) {
 	}
 
 	book := &entity.Book{
+		Type:        a.Name(),
 		ID:          bd.GetISBN(),
 		Title:       bd.GetTitle(),
 		SeriesTitle: bd.GetSeries(),

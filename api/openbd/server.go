@@ -2,6 +2,8 @@ package openbd
 
 import (
 	"net/http"
+
+	"github.com/spiegel-im-spiegel/books-data/api"
 )
 
 //CommandType is Type of openBD commands
@@ -28,7 +30,8 @@ func (c CommandType) String() string {
 
 //Server is informations of OpenPGP key server
 type Server struct {
-	cmd CommandType //Type of openBD commands
+	svcType api.ServiceType //Service Type
+	cmd     CommandType     //Type of openBD commands
 }
 
 func (s *Server) CreateClient() *Client {

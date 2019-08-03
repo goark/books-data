@@ -6,6 +6,8 @@ import (
 	"strings"
 
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
+	"github.com/spiegel-im-spiegel/books-data/api"
 	"github.com/spiegel-im-spiegel/books-data/api/openbd"
 	"github.com/spiegel-im-spiegel/books-data/review"
 	"github.com/spiegel-im-spiegel/errs"
@@ -15,7 +17,7 @@ import (
 //newpaapiCmd returns cobra.Command instance for show sub-command
 func newOpenBDCmd(ui *rwi.RWI) *cobra.Command {
 	openBDCmd := &cobra.Command{
-		Use:   "openbd [flags] [description]",
+		Use:   api.TypeOpenBD.String() + " [flags] [description]",
 		Short: "Search for books data by openBD",
 		Long:  "Search for books data by openBD",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -38,10 +40,7 @@ func newOpenBDCmd(ui *rwi.RWI) *cobra.Command {
 				return errs.Wrap(err, "--review-date")
 			}
 			//Template data
-			tf, err := cmd.Flags().GetString("template")
-			if err != nil {
-				return errs.Wrap(err, "--template")
-			}
+			tf := viper.GetString("template-file")
 			var tr io.Reader
 			if len(tf) > 0 {
 				file, err := os.Open(tf)
@@ -78,12 +77,16 @@ func newOpenBDCmd(ui *rwi.RWI) *cobra.Command {
 			if err != nil {
 				return debugPrint(ui, err)
 			}
-			b, err := review.New(
+			rev := review.New(
 				book,
 				review.WithDate(dt),
 				review.WithRating(rating),
 				review.WithDescription(desc),
-			).Format(tr)
+			)
+			if err := updateReviewLog(rev); err != nil {
+				return debugPrint(ui, err)
+			}
+			b, err := rev.Format(tr)
 			if err != nil {
 				return debugPrint(ui, err)
 			}

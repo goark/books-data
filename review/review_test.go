@@ -25,6 +25,11 @@ func TestReview(t *testing.T) {
 	if str != res {
 		t.Errorf("review.New() = \"%v\", want \"%v\"", str, res)
 	}
+	dst := (&Review{}).CopyFrom(rev)
+	str = dst.String()
+	if str != res {
+		t.Errorf("review.New() = \"%v\", want \"%v\"", str, res)
+	}
 }
 
 var testTemplate = `<div class="hreview">

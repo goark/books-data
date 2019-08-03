@@ -17,7 +17,8 @@ func TestECodeError(t *testing.T) {
 		{err: ErrNoCommand, str: "No command"},
 		{err: ErrInvalidAPIResponse, str: "Invalid response data from API"},
 		{err: ErrNoData, str: "No response data"},
-		{err: ECode(5), str: "unknown error (5)"},
+		{err: ErrUnMatchServiceType, str: "Unmatch service type"},
+		{err: ECode(6), str: "unknown error (6)"},
 	}
 
 	for _, tc := range testCases {

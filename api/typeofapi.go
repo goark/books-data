@@ -1,16 +1,23 @@
 package api
 
-import (
-	"io"
+//ECode is error codes for books-data
+type ServiceType int
 
-	"github.com/spiegel-im-spiegel/books-data/entity"
+const (
+	TypePAAPI ServiceType = iota + 1
+	TypeOpenBD
 )
 
-//API is interface class  for searching book API
-type API interface {
-	Name() string                               //Name of API
-	LookupBook(id string) (*entity.Book, error) //Lookup book data by API
-	LookupRawData(id string) (io.Reader, error) //Lookup raw data by API
+var strTypes = map[ServiceType]string{
+	TypePAAPI:  "paapi",
+	TypeOpenBD: "openbd",
+}
+
+func (t ServiceType) String() string {
+	if s, ok := strTypes[t]; ok {
+		return s
+	}
+	return "unknown"
 }
 
 /* Copyright 2019 Spiegel

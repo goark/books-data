@@ -5,23 +5,19 @@ import (
 	"os"
 	"strings"
 
-	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
+	"github.com/spiegel-im-spiegel/books-data/api"
 	"github.com/spiegel-im-spiegel/books-data/api/pa"
 	"github.com/spiegel-im-spiegel/books-data/review"
 	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
 
-var (
-	cfgFile string //config file
-)
-
 //newpaapiCmd returns cobra.Command instance for show sub-command
 func newPaApiCmd(ui *rwi.RWI) *cobra.Command {
 	paapiCmd := &cobra.Command{
-		Use:   "paapi [flags] [description]",
+		Use:   api.TypePAAPI.String() + " [flags] [description]",
 		Short: "Search for books data by PA-API",
 		Long:  "Search for books data by PA-API",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -44,10 +40,7 @@ func newPaApiCmd(ui *rwi.RWI) *cobra.Command {
 				return errs.Wrap(err, "--review-date")
 			}
 			//Template data
-			tf, err := cmd.Flags().GetString("template")
-			if err != nil {
-				return errs.Wrap(err, "--template")
-			}
+			tf := viper.GetString("template-file")
 			var tr io.Reader
 			if len(tf) > 0 {
 				file, err := os.Open(tf)
@@ -89,12 +82,16 @@ func newPaApiCmd(ui *rwi.RWI) *cobra.Command {
 			if err != nil {
 				return debugPrint(ui, err)
 			}
-			b, err := review.New(
+			rev := review.New(
 				book,
 				review.WithDate(dt),
 				review.WithRating(rating),
 				review.WithDescription(desc),
-			).Format(tr)
+			)
+			if err := updateReviewLog(rev); err != nil {
+				return debugPrint(ui, err)
+			}
+			b, err := rev.Format(tr)
 			if err != nil {
 				return debugPrint(ui, err)
 			}
@@ -102,8 +99,7 @@ func newPaApiCmd(ui *rwi.RWI) *cobra.Command {
 		},
 	}
 	//config file option
-	paapiCmd.Flags().StringVar(&cfgFile, "config", "", "config file (default $HOME/.paapi.yaml)")
-	cobra.OnInitialize(initConfig)
+	//paapiCmd.Flags().StringVar(&cfgFile, "config", "", "config file (default $HOME/.paapi.yaml)")
 
 	//options for PA-API
 	paapiCmd.Flags().StringP("marketplace", "", "webservices.amazon.co.jp", "PA-API: Marketplace")
@@ -119,28 +115,8 @@ func newPaApiCmd(ui *rwi.RWI) *cobra.Command {
 	paapiCmd.Flags().StringP("asin", "a", "", "Amazon ASIN code")
 	paapiCmd.Flags().IntP("rating", "r", 0, "Rating of product")
 	paapiCmd.Flags().StringP("review-date", "", "", "Date of review")
-	paapiCmd.Flags().StringP("template", "t", "", "Template file")
 
 	return paapiCmd
-}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-	if cfgFile != "" {
-		// Use config file from the flag.
-		viper.SetConfigFile(cfgFile)
-	} else {
-		// Find home directory.
-		home, err := homedir.Dir()
-		if err != nil {
-			panic(err)
-		}
-		// Search config in home directory with name ".paapi.yaml" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".paapi")
-	}
-	viper.AutomaticEnv()     // read in environment variables that match
-	_ = viper.ReadInConfig() // If a config file is found, read it in.
 }
 
 /* Copyright 2019 Spiegel

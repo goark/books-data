@@ -17,7 +17,8 @@ import (
 
 //PaAPI is class of PA-API
 type PaAPI struct {
-	paapi *amazonproduct.AmazonProductAPI
+	svcType api.ServiceType //Service Type
+	paapi   *amazonproduct.AmazonProductAPI
 }
 
 //PaAPIOptFunc is self-referential function for functional options pattern
@@ -29,53 +30,58 @@ func New(opts ...PaAPIOptFunc) api.API {
 	for _, opt := range opts {
 		opt(paapi)
 	}
-	return &PaAPI{paapi: paapi}
+	return &PaAPI{svcType: api.TypePAAPI, paapi: paapi}
 }
 
 //WithMarketplace returns function for setting Marketplace
 func WithMarketplace(mp string) PaAPIOptFunc {
-	return func(api *amazonproduct.AmazonProductAPI) {
-		if api != nil {
-			api.Host = mp
+	return func(aa *amazonproduct.AmazonProductAPI) {
+		if aa != nil {
+			aa.Host = mp
 		}
 	}
 }
 
 //WithAssociateTag returns function for setting Associate Tag
 func WithAssociateTag(tag string) PaAPIOptFunc {
-	return func(api *amazonproduct.AmazonProductAPI) {
-		if api != nil {
-			api.AssociateTag = tag
+	return func(aa *amazonproduct.AmazonProductAPI) {
+		if aa != nil {
+			aa.AssociateTag = tag
 		}
 	}
 }
 
 //WithAccessKey returns function for setting Access Key
 func WithAccessKey(key string) PaAPIOptFunc {
-	return func(api *amazonproduct.AmazonProductAPI) {
-		if api != nil {
-			api.AccessKey = key
+	return func(aa *amazonproduct.AmazonProductAPI) {
+		if aa != nil {
+			aa.AccessKey = key
 		}
 	}
 }
 
 //WithSecretKey returns function for setting Secret Access Key
 func WithSecretKey(key string) PaAPIOptFunc {
-	return func(api *amazonproduct.AmazonProductAPI) {
-		if api != nil {
-			api.SecretKey = key
+	return func(aa *amazonproduct.AmazonProductAPI) {
+		if aa != nil {
+			aa.SecretKey = key
 		}
 	}
 }
 
+//Name returns name of API
+func (a *PaAPI) Name() string {
+	return a.svcType.String()
+}
+
 //lookupXML returns XML data from PA-API
-func (api *PaAPI) lookupXML(id string) (io.Reader, error) {
+func (a *PaAPI) lookupXML(id string) (io.Reader, error) {
 	params := map[string]string{
 		"IdType":        "ASIN",
 		"ResponseGroup": "Images,ItemAttributes,Small",
 		"ItemId":        id,
 	}
-	xml, err := api.paapi.ItemLookupWithParams(params)
+	xml, err := a.paapi.ItemLookupWithParams(params)
 	if err != nil {
 		return nil, errs.Wrap(err, "error in PaAPI.lookupXML() function")
 	}
@@ -92,13 +98,13 @@ func unmarshalXML(xmldata io.Reader) (*amazonproduct.ItemLookupResponse, error) 
 }
 
 ///LookupRawData returns PA-API raw data
-func (api *PaAPI) LookupRawData(id string) (io.Reader, error) {
-	return api.lookupXML(id)
+func (a *PaAPI) LookupRawData(id string) (io.Reader, error) {
+	return a.lookupXML(id)
 }
 
 ///LookupBook returns Book data from PA-API
-func (api *PaAPI) LookupBook(id string) (*entity.Book, error) {
-	data, err := api.lookupXML(id)
+func (a *PaAPI) LookupBook(id string) (*entity.Book, error) {
+	data, err := a.lookupXML(id)
 	if err != nil {
 		return nil, errs.Wrap(err, "error in PaAPI.LookupBook() function")
 	}
@@ -114,6 +120,7 @@ func (api *PaAPI) LookupBook(id string) (*entity.Book, error) {
 	}
 	item := res.Items.Item[0]
 	book := &entity.Book{
+		Type:  a.Name(),
 		ID:    item.ASIN,
 		Title: item.ItemAttributes.Title,
 		URL:   item.DetailPageURL,

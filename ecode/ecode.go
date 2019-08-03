@@ -10,6 +10,7 @@ const (
 	ErrNoCommand
 	ErrInvalidAPIResponse
 	ErrNoData
+	ErrUnMatchServiceType
 )
 
 var errMessages = map[ECode]string{
@@ -17,6 +18,7 @@ var errMessages = map[ECode]string{
 	ErrNoCommand:          "No command",
 	ErrInvalidAPIResponse: "Invalid response data from API",
 	ErrNoData:             "No response data",
+	ErrUnMatchServiceType: "Unmatch service type",
 }
 
 func (e ECode) Error() string {

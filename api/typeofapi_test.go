@@ -1,16 +1,24 @@
 package api
 
-import (
-	"io"
+import "testing"
 
-	"github.com/spiegel-im-spiegel/books-data/entity"
-)
+func TestServiceType(t *testing.T) {
+	testCases := []struct {
+		t   ServiceType
+		str string
+	}{
+		{t: ServiceType(0), str: "unknown"},
+		{t: TypePAAPI, str: "paapi"},
+		{t: TypeOpenBD, str: "openbd"},
+		{t: ServiceType(3), str: "unknown"},
+	}
 
-//API is interface class  for searching book API
-type API interface {
-	Name() string                               //Name of API
-	LookupBook(id string) (*entity.Book, error) //Lookup book data by API
-	LookupRawData(id string) (io.Reader, error) //Lookup raw data by API
+	for _, tc := range testCases {
+		s := tc.t.String()
+		if s != tc.str {
+			t.Errorf("\"%v\" != \"%v\"", s, tc.str)
+		}
+	}
 }
 
 /* Copyright 2019 Spiegel

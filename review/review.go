@@ -48,21 +48,7 @@ func WithDate(s string) ReviewOptFunc {
 //WithRating returns function for setting IdType
 func WithRating(r int) ReviewOptFunc {
 	return func(rev *Review) {
-		if rev != nil {
-			if r < 0 {
-				r = 0
-			} else if r > MAX_STAR {
-				r = MAX_STAR
-			}
-			rev.Rating = r
-			for i := 0; i < MAX_STAR; i++ {
-				if r > i {
-					rev.Star[i] = true
-				} else {
-					rev.Star[i] = false
-				}
-			}
-		}
+		rev.SetRating(r)
 	}
 }
 
@@ -73,6 +59,27 @@ func WithDescription(s string) ReviewOptFunc {
 			rev.Description = s
 		}
 	}
+}
+
+//SetRating sets rating value of book
+func (rev *Review) SetRating(r int) *Review {
+	if rev == nil {
+		return nil
+	}
+	if r < 0 {
+		r = 0
+	} else if r > MAX_STAR {
+		r = MAX_STAR
+	}
+	rev.Rating = r
+	for i := 0; i < MAX_STAR; i++ {
+		if r > i {
+			rev.Star[i] = true
+		} else {
+			rev.Star[i] = false
+		}
+	}
+	return rev
 }
 
 func (r *Review) Format(tr io.Reader) ([]byte, error) {
@@ -103,6 +110,20 @@ func (r *Review) String() string {
 		return ""
 	}
 	return string(b)
+}
+
+func (r *Review) CopyFrom(src *Review) *Review {
+	if src == nil {
+		return nil
+	}
+	if r == nil {
+		return src
+	}
+	r.Book = r.Book.CopyFrom(src.Book)
+	r.Date = src.Date
+	r.SetRating(src.Rating)
+	r.Description = src.Description
+	return r
 }
 
 /* Copyright 2019 Spiegel

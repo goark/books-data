@@ -19,6 +19,10 @@ func NewTestAPI() api.API {
 	return testAPI{testBookData}
 }
 
+func (ta testAPI) Name() string {
+	return "test"
+}
+
 func (ta testAPI) LookupRawData(id string) (io.Reader, error) {
 	return bytes.NewBufferString(ta.output), nil
 }
@@ -37,6 +41,7 @@ func (ta testAPI) LookupBook(id string) (*entity.Book, error) {
 var (
 	testBookData = `
 {
+    "Type": "test",
     "ID": "card56642",
     "Title": "陰翳礼讃",
     "SubTitle": "",
@@ -64,7 +69,7 @@ var (
 	  }
 }
 `
-	testBookResp = `{"ID":"card56642","Title":"陰翳礼讃","URL":"https://www.aozora.gr.jp/cards/001383/card56642.html","Image":{"URL":"https://text.baldanders.info/images/aozora/card56642.svg","Height":227,"Width":321},"ProductType":"Book","Authors":["谷崎 潤一郎"],"Publisher":"青空文庫","Codes":[{"Name":"青空文庫","Value":"card56642"}],"PublicationDate":"2016-06-10","LastRelease":"2019-02-24","Service":{"Name":"青空文庫","URL":"https://www.aozora.gr.jp/"}}`
+	testBookResp = `{"Type":"test","ID":"card56642","Title":"陰翳礼讃","URL":"https://www.aozora.gr.jp/cards/001383/card56642.html","Image":{"URL":"https://text.baldanders.info/images/aozora/card56642.svg","Height":227,"Width":321},"ProductType":"Book","Authors":["谷崎 潤一郎"],"Publisher":"青空文庫","Codes":[{"Name":"青空文庫","Value":"card56642"}],"PublicationDate":"2016-06-10","LastRelease":"2019-02-24","Service":{"Name":"青空文庫","URL":"https://www.aozora.gr.jp/"}}`
 )
 
 func TestAPI(t *testing.T) {

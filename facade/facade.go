@@ -4,8 +4,12 @@ import (
 	"fmt"
 	"runtime"
 
+	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 	"github.com/spiegel-im-spiegel/books-data/ecode"
+	"github.com/spiegel-im-spiegel/books-data/review"
+	"github.com/spiegel-im-spiegel/books-data/review/logger"
 	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gocli/exitcode"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
@@ -21,6 +25,9 @@ var (
 	debugFlag bool //debug flag
 	rawFlag   bool //raw flag
 	pipeFlag  bool //pipe flag
+)
+var (
+	cfgFile string //config file
 )
 
 //newRootCmd returns cobra.Command instance for root command
@@ -40,12 +47,56 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 	rootCmd.AddCommand(newPaApiCmd(ui))
 	rootCmd.AddCommand(newOpenBDCmd(ui))
 
-	//global options
+	//global options in config file
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Config file (default $HOME/.books-data.yaml)")
+	rootCmd.PersistentFlags().StringP("template-file", "t", "", "Template file for formatted output")
+	rootCmd.PersistentFlags().StringP("review-log", "l", "", "Review log file (JSON format)")
+	_ = viper.BindPFlag("template-file", rootCmd.PersistentFlags().Lookup("template-file"))
+	_ = viper.BindPFlag("review-log", rootCmd.PersistentFlags().Lookup("review-log"))
+	cobra.OnInitialize(initConfig)
+
+	//global options (others)
 	rootCmd.PersistentFlags().BoolVarP(&debugFlag, "debug", "", false, "for debug")
 	rootCmd.PersistentFlags().BoolVarP(&rawFlag, "raw", "", false, "Output raw data from openBD")
 	rootCmd.PersistentFlags().BoolVarP(&pipeFlag, "pipe", "", false, "Import description from Stdin")
 
 	return rootCmd
+}
+
+// initConfig reads in config file and ENV variables if set.
+func initConfig() {
+	if cfgFile != "" {
+		// Use config file from the flag.
+		viper.SetConfigFile(cfgFile)
+	} else {
+		// Find home directory.
+		home, err := homedir.Dir()
+		if err != nil {
+			panic(err)
+		}
+		// Search config in home directory with name ".books-data.yaml" (without extension).
+		viper.AddConfigPath(home)
+		viper.SetConfigName(".books-data")
+	}
+	viper.AutomaticEnv()     // read in environment variables that match
+	_ = viper.ReadInConfig() // If a config file is found, read it in.
+}
+
+func updateReviewLog(rev *review.Review) error {
+	path := viper.GetString("review-log")
+	fmt.Println("debug", path)
+	if len(path) == 0 {
+		return nil
+	}
+	revs, err := logger.ImportJSONFile(path)
+	if err != nil {
+		return errs.Wrap(err, "error in facade.updateReviewLog() function")
+	}
+	revs = revs.Append(rev)
+	if err := revs.ExportJSONFile(path); err != nil {
+		return errs.Wrap(err, "error in facade.updateReviewLog() function")
+	}
+	return nil
 }
 
 func debugPrint(ui *rwi.RWI, err error) error {
