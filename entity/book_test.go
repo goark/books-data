@@ -1,6 +1,7 @@
 package entity
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/spiegel-im-spiegel/books-data/entity/values"
@@ -108,6 +109,42 @@ func TestBookCopyFrom(t *testing.T) {
 			t.Errorf("\"%v\" != \"%v\"", s, tc.str)
 		}
 
+	}
+}
+
+var testBookData = `{"Type":"test","ID":"card56642","Title":"陰翳礼讃","URL":"https://www.aozora.gr.jp/cards/001383/card56642.html","Image":{"URL":"https://text.baldanders.info/images/aozora/card56642.svg","Height":227,"Width":321},"ProductType":"Book","Authors":["谷崎 潤一郎"],"Publisher":"青空文庫","Codes":[{"Name":"青空文庫","Value":"card56642"}],"PublicationDate":"2016-06-10","LastRelease":"2019-02-24","Service":{"Name":"青空文庫","URL":"https://www.aozora.gr.jp/"}}`
+var testBookRes = `@BOOK{Book:card56642,
+    TITLE = "陰翳礼讃",
+    AUTHOR = "谷崎 潤一郎",
+    PUBLISHER = {青空文庫},
+    YEAR = 2016
+}
+`
+
+func TestFormat(t *testing.T) {
+	testCases := []struct {
+		data   string
+		result string
+	}{
+		{data: testBookData, result: testBookRes},
+	}
+
+	for _, tc := range testCases {
+		book, err := ImportBookFromJSON(strings.NewReader(tc.data))
+		if err != nil {
+			t.Errorf("ImportBookFromJSON() error: %+v", err)
+			continue
+		}
+
+		b, err := book.Format("../testdata/book-template/template.bib.txt")
+		if err != nil {
+			t.Errorf("ByTemplateFile() error: %+v", err)
+			continue
+		}
+		s := string(b)
+		if s != tc.result {
+			t.Errorf("ByTemplateFile() = \"%v\", watnt \"%v\"", s, tc.result)
+		}
 	}
 }
 

@@ -10,7 +10,8 @@ func TestServiceType(t *testing.T) {
 		{t: ServiceType(0), str: "unknown"},
 		{t: TypePAAPI, str: "paapi"},
 		{t: TypeOpenBD, str: "openbd"},
-		{t: ServiceType(3), str: "unknown"},
+		{t: TypeOthers, str: "others"},
+		{t: ServiceType(4), str: "unknown"},
 	}
 
 	for _, tc := range testCases {

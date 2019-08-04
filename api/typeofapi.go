@@ -6,11 +6,13 @@ type ServiceType int
 const (
 	TypePAAPI ServiceType = iota + 1
 	TypeOpenBD
+	TypeOthers
 )
 
 var strTypes = map[ServiceType]string{
 	TypePAAPI:  "paapi",
 	TypeOpenBD: "openbd",
+	TypeOthers: "others",
 }
 
 func (t ServiceType) String() string {

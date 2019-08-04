@@ -1,6 +1,7 @@
 package openbd
 
 import (
+	"io/ioutil"
 	"net/http"
 	"net/url"
 
@@ -13,7 +14,25 @@ type Client struct {
 	client *http.Client
 }
 
-func (c *Client) Get(v url.Values) (*http.Response, error) {
+//lookupJSON returns JSON data from openBD
+func (c *Client) LookupJSON(id string) ([]byte, error) {
+	v := url.Values{
+		"isbn": {id},
+	}
+	resp, err := c.get(v)
+	if err != nil {
+		return nil, errs.Wrap(err, "error in Client.LookupJSON() function")
+	}
+	defer resp.Body.Close()
+
+	body, err := ioutil.ReadAll(resp.Body)
+	if err != nil {
+		return body, errs.Wrap(err, "error in Client.LookupJSON() function")
+	}
+	return body, nil
+}
+
+func (c *Client) get(v url.Values) (*http.Response, error) {
 	url := c.cmd.String() + "?" + v.Encode()
 	resp, err := c.client.Get(url)
 	if err != nil {

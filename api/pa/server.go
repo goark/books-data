@@ -1,23 +1,31 @@
-package review
+package pa
 
 import (
-	"bytes"
-	"text/template"
+	"net/http"
 
-	"github.com/spiegel-im-spiegel/errs"
+	amazonproduct "github.com/DDRBoxman/go-amazon-product-api"
 )
 
-//Format returns Formatted text by template
-func Format(obj interface{}, tmplt string) (*bytes.Buffer, error) {
-	t, err := template.New("Formatting").Parse(tmplt)
-	if err != nil {
-		return nil, errs.Wrap(err, "error in review.Format() function")
+//Server is informations of PA-API
+type Server struct {
+	marketplace  string
+	associateTag string
+	accessKey    string
+	secretKey    string
+	enableISBN   bool //enable ISBN code by lookup item
+}
+
+func (s *Server) CreateClient() *Client {
+	return &Client{
+		enableISBN: s.enableISBN,
+		paapi: &amazonproduct.AmazonProductAPI{
+			Client:       &http.Client{},
+			Host:         s.marketplace,
+			AssociateTag: s.associateTag,
+			AccessKey:    s.accessKey,
+			SecretKey:    s.secretKey,
+		},
 	}
-	buf := &bytes.Buffer{}
-	if err := t.Execute(buf, obj); err != nil {
-		return buf, errs.Wrap(err, "error in review.Format() function")
-	}
-	return buf, nil
 }
 
 /* Copyright 2019 Spiegel

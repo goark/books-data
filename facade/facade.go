@@ -8,8 +8,6 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/spiegel-im-spiegel/books-data/ecode"
-	"github.com/spiegel-im-spiegel/books-data/review"
-	"github.com/spiegel-im-spiegel/books-data/review/logger"
 	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gocli/exitcode"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
@@ -22,12 +20,11 @@ var (
 	Version = "developer version"
 )
 var (
-	debugFlag bool //debug flag
-	rawFlag   bool //raw flag
-	pipeFlag  bool //pipe flag
-)
-var (
-	cfgFile string //config file
+	debugFlag bool   //debug flag
+	cfgFile   string //config file
+	asin      string //ASIN code
+	isbn      string //ISBN code
+	tmpltPath string //template file path
 )
 
 //newRootCmd returns cobra.Command instance for root command
@@ -44,21 +41,31 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 	rootCmd.SetIn(ui.Reader())          //Stdin
 	rootCmd.SetOutput(ui.ErrorWriter()) //Stdout and Stderr
 	rootCmd.AddCommand(newVersionCmd(ui))
-	rootCmd.AddCommand(newPaApiCmd(ui))
-	rootCmd.AddCommand(newOpenBDCmd(ui))
+	rootCmd.AddCommand(newSearchCmd(ui))
+	rootCmd.AddCommand(newReviewCmd(ui))
+	rootCmd.AddCommand(newHistroyCmd(ui))
 
-	//global options in config file
+	//global options
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Config file (default $HOME/.books-data.yaml)")
-	rootCmd.PersistentFlags().StringP("template-file", "t", "", "Template file for formatted output")
-	rootCmd.PersistentFlags().StringP("review-log", "l", "", "Review log file (JSON format)")
-	_ = viper.BindPFlag("template-file", rootCmd.PersistentFlags().Lookup("template-file"))
+	rootCmd.PersistentFlags().StringP("review-log", "l", "", "Config: Review log file (JSON format)")
+	rootCmd.PersistentFlags().StringP("marketplace", "", "webservices.amazon.co.jp", "Config: PA-API Marketplace")
+	rootCmd.PersistentFlags().StringP("associate-tag", "", "", "Config: PA-API Associate Tag")
+	rootCmd.PersistentFlags().StringP("access-key", "", "", "Config: PA-API Access Key ID")
+	rootCmd.PersistentFlags().StringP("secret-key", "", "", "Config: PA-API Secret Access Key")
+
+	//Bind config file
 	_ = viper.BindPFlag("review-log", rootCmd.PersistentFlags().Lookup("review-log"))
+	_ = viper.BindPFlag("marketplace", rootCmd.PersistentFlags().Lookup("marketplace"))
+	_ = viper.BindPFlag("associate-tag", rootCmd.PersistentFlags().Lookup("associate-tag"))
+	_ = viper.BindPFlag("access-key", rootCmd.PersistentFlags().Lookup("access-key"))
+	_ = viper.BindPFlag("secret-key", rootCmd.PersistentFlags().Lookup("secret-key"))
 	cobra.OnInitialize(initConfig)
 
 	//global options (others)
 	rootCmd.PersistentFlags().BoolVarP(&debugFlag, "debug", "", false, "for debug")
-	rootCmd.PersistentFlags().BoolVarP(&rawFlag, "raw", "", false, "Output raw data from openBD")
-	rootCmd.PersistentFlags().BoolVarP(&pipeFlag, "pipe", "", false, "Import description from Stdin")
+	rootCmd.PersistentFlags().StringVarP(&asin, "asin", "a", "", "Amazon ASIN code")
+	rootCmd.PersistentFlags().StringVarP(&isbn, "isbn", "i", "", "ISBN code")
+	rootCmd.PersistentFlags().StringVarP(&tmpltPath, "template-file", "t", "", "Template file for formatted output")
 
 	return rootCmd
 }
@@ -80,23 +87,6 @@ func initConfig() {
 	}
 	viper.AutomaticEnv()     // read in environment variables that match
 	_ = viper.ReadInConfig() // If a config file is found, read it in.
-}
-
-func updateReviewLog(rev *review.Review) error {
-	path := viper.GetString("review-log")
-	fmt.Println("debug", path)
-	if len(path) == 0 {
-		return nil
-	}
-	revs, err := logger.ImportJSONFile(path)
-	if err != nil {
-		return errs.Wrap(err, "error in facade.updateReviewLog() function")
-	}
-	revs = revs.Append(rev)
-	if err := revs.ExportJSONFile(path); err != nil {
-		return errs.Wrap(err, "error in facade.updateReviewLog() function")
-	}
-	return nil
 }
 
 func debugPrint(ui *rwi.RWI, err error) error {

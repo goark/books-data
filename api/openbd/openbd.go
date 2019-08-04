@@ -4,8 +4,6 @@ import (
 	"bytes"
 	"encoding/json"
 	"io"
-	"io/ioutil"
-	"net/url"
 
 	obd "github.com/seihmd/openbd"
 	"github.com/spiegel-im-spiegel/books-data/api"
@@ -37,39 +35,9 @@ func (a *OpenBD) Name() string {
 	return a.server.svcType.String()
 }
 
-//lookupJSON returns JSON data from openBD
-func (a *OpenBD) lookupJSON(id string) ([]byte, error) {
-	v := url.Values{
-		"isbn": {id},
-	}
-	resp, err := a.server.CreateClient().Get(v)
-	if err != nil {
-		return nil, errs.Wrap(err, "error in OpenBD.lookupJSON() function")
-	}
-	defer resp.Body.Close()
-
-	body, err := ioutil.ReadAll(resp.Body)
-	if err != nil {
-		return body, errs.Wrap(err, "error in OpenBD.lookupJSON() function")
-	}
-	return body, nil
-}
-
-//unmarshalJSON returns unmarshalled JSON data
-func unmarshalJSON(jsondata []byte) (*obd.Book, error) {
-	books := []obd.Book{}
-	if err := json.Unmarshal(jsondata, &books); err != nil {
-		return nil, errs.Wrap(err, "error in OpenBD.unmarshalJSON() function")
-	}
-	if len(books) == 0 {
-		return nil, errs.Wrap(ecode.ErrNoData, "error in OpenBD.unmarshalJSON() function")
-	}
-	return &books[0], nil
-}
-
 ///LookupRawData returns openBD raw data
 func (a *OpenBD) LookupRawData(id string) (io.Reader, error) {
-	res, err := a.lookupJSON(id)
+	res, err := a.server.CreateClient().LookupJSON(id)
 	if err != nil {
 		return nil, err
 	}
@@ -78,7 +46,7 @@ func (a *OpenBD) LookupRawData(id string) (io.Reader, error) {
 
 ///LookupBook returns Book data from openBD
 func (a *OpenBD) LookupBook(id string) (*entity.Book, error) {
-	data, err := a.lookupJSON(id)
+	data, err := a.LookupRawData(id)
 	if err != nil {
 		return nil, errs.Wrap(err, "error in OpenBD.LookupBook() function")
 	}
@@ -116,6 +84,18 @@ func (a *OpenBD) LookupBook(id string) (*entity.Book, error) {
 	}
 
 	return book, nil
+}
+
+//unmarshalJSON returns unmarshalled JSON data
+func unmarshalJSON(jsondata io.Reader) (*obd.Book, error) {
+	books := []obd.Book{}
+	if err := json.NewDecoder(jsondata).Decode(&books); err != nil {
+		return nil, errs.Wrap(err, "error in OpenBD.unmarshalJSON() function")
+	}
+	if len(books) == 0 {
+		return nil, errs.Wrap(ecode.ErrNoData, "error in OpenBD.unmarshalJSON() function")
+	}
+	return &books[0], nil
 }
 
 /* Copyright 2019 Spiegel

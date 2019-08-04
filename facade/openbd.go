@@ -1,105 +1,31 @@
 package facade
 
 import (
+	"bytes"
 	"io"
-	"os"
-	"strings"
 
-	"github.com/spf13/cobra"
-	"github.com/spf13/viper"
-	"github.com/spiegel-im-spiegel/books-data/api"
 	"github.com/spiegel-im-spiegel/books-data/api/openbd"
-	"github.com/spiegel-im-spiegel/books-data/review"
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gocli/rwi"
+	"github.com/spiegel-im-spiegel/books-data/entity"
 )
 
-//newpaapiCmd returns cobra.Command instance for show sub-command
-func newOpenBDCmd(ui *rwi.RWI) *cobra.Command {
-	openBDCmd := &cobra.Command{
-		Use:   api.TypeOpenBD.String() + " [flags] [description]",
-		Short: "Search for books data by openBD",
-		Long:  "Search for books data by openBD",
-		RunE: func(cmd *cobra.Command, args []string) error {
-			//ASIN code
-			id, err := cmd.Flags().GetString("isbn")
-			if err != nil {
-				return errs.Wrap(err, "--isbn")
-			}
-			if len(id) == 0 {
-				return errs.Wrap(os.ErrInvalid, "No ISBN code")
-			}
-			//Ratins
-			rating, err := cmd.Flags().GetInt("rating")
-			if err != nil {
-				return errs.Wrap(err, "--rating")
-			}
-			//Date of review
-			dt, err := cmd.Flags().GetString("review-date")
-			if err != nil {
-				return errs.Wrap(err, "--review-date")
-			}
-			//Template data
-			tf := viper.GetString("template-file")
-			var tr io.Reader
-			if len(tf) > 0 {
-				file, err := os.Open(tf)
-				if err != nil {
-					return err
-				}
-				defer file.Close()
-				tr = file
-			}
-			//Description
-			desc := ""
-			if pipeFlag {
-				w := &strings.Builder{}
-				if _, err := io.Copy(w, ui.Reader()); err != nil {
-					return debugPrint(ui, errs.Wrap(err, "Cannot read Stdin"))
-				}
-				desc = w.String()
-			} else if len(args) > 1 {
-				return errs.Wrap(os.ErrInvalid, strings.Join(args, " "))
-			} else if len(args) == 1 {
-				desc = args[0]
-			}
-
-			//Creatte API
-			obdapi := openbd.New(openbd.GET)
-			if rawFlag {
-				res, err := obdapi.LookupRawData(id)
-				if err != nil {
-					return debugPrint(ui, err)
-				}
-				return debugPrint(ui, ui.WriteFrom(res))
-			}
-			book, err := obdapi.LookupBook(id)
-			if err != nil {
-				return debugPrint(ui, err)
-			}
-			rev := review.New(
-				book,
-				review.WithDate(dt),
-				review.WithRating(rating),
-				review.WithDescription(desc),
-			)
-			if err := updateReviewLog(rev); err != nil {
-				return debugPrint(ui, err)
-			}
-			b, err := rev.Format(tr)
-			if err != nil {
-				return debugPrint(ui, err)
-			}
-			return debugPrint(ui, ui.Output(string(b)))
-		},
+func searchOpenBD(id string, rawFlag bool) (io.Reader, error) {
+	obdapi := openbd.New(openbd.GET)
+	if rawFlag {
+		return obdapi.LookupRawData(id)
 	}
-	//parameters for review
-	openBDCmd.Flags().StringP("isbn", "i", "", "ISBN code")
-	openBDCmd.Flags().IntP("rating", "r", 0, "Rating of product")
-	openBDCmd.Flags().StringP("review-date", "", "", "Date of review")
-	openBDCmd.Flags().StringP("template", "t", "", "Template file")
+	book, err := obdapi.LookupBook(id)
+	if err != nil {
+		return nil, err
+	}
+	b, err := book.Format(tmpltPath)
+	if err != nil {
+		return nil, err
+	}
+	return bytes.NewReader(b), nil
+}
 
-	return openBDCmd
+func findOpenBD(id string) (*entity.Book, error) {
+	return openbd.New(openbd.GET).LookupBook(id)
 }
 
 /* Copyright 2019 Spiegel

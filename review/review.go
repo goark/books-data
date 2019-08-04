@@ -2,13 +2,12 @@ package review
 
 import (
 	"encoding/json"
-	"io"
-	"strings"
 	"time"
 
 	"github.com/spiegel-im-spiegel/books-data/ecode"
 	"github.com/spiegel-im-spiegel/books-data/entity"
 	"github.com/spiegel-im-spiegel/books-data/entity/values"
+	"github.com/spiegel-im-spiegel/books-data/format"
 	"github.com/spiegel-im-spiegel/errs"
 )
 
@@ -82,22 +81,18 @@ func (rev *Review) SetRating(r int) *Review {
 	return rev
 }
 
-func (r *Review) Format(tr io.Reader) ([]byte, error) {
+func (r *Review) Format(tmpltPath string) ([]byte, error) {
 	if r == nil {
 		return nil, errs.Wrap(ecode.ErrNullPointer, "error in review.Review.Format() function")
 	}
-	if tr == nil {
+	if len(tmpltPath) == 0 {
 		b, err := json.Marshal(r)
 		if err != nil {
 			return nil, errs.Wrap(err, "error in review.Review.Format() function")
 		}
 		return b, nil
 	}
-	tmplt := &strings.Builder{}
-	if _, err := io.Copy(tmplt, tr); err != nil {
-		return nil, errs.Wrap(err, "error in review.Review.Format() function")
-	}
-	buf, err := Format(r, tmplt.String())
+	buf, err := format.ByTemplateFile(r, tmpltPath)
 	if err != nil {
 		return buf.Bytes(), errs.Wrap(err, "error in review.Review.Format() function")
 	}
@@ -105,7 +100,7 @@ func (r *Review) Format(tr io.Reader) ([]byte, error) {
 }
 
 func (r *Review) String() string {
-	b, err := r.Format(nil)
+	b, err := r.Format("")
 	if err != nil {
 		return ""
 	}

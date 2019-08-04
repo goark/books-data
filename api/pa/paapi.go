@@ -1,10 +1,8 @@
 package pa
 
 import (
-	"bytes"
 	"encoding/xml"
 	"io"
-	"net/http"
 	"time"
 
 	amazonproduct "github.com/DDRBoxman/go-amazon-product-api"
@@ -18,53 +16,62 @@ import (
 //PaAPI is class of PA-API
 type PaAPI struct {
 	svcType api.ServiceType //Service Type
-	paapi   *amazonproduct.AmazonProductAPI
+	server  *Server         //server info.
 }
 
 //PaAPIOptFunc is self-referential function for functional options pattern
-type PaAPIOptFunc func(*amazonproduct.AmazonProductAPI)
+type PaAPIOptFunc func(*Server)
 
 //New returns PaAPI instance
 func New(opts ...PaAPIOptFunc) api.API {
-	paapi := &amazonproduct.AmazonProductAPI{Client: &http.Client{}}
+	server := &Server{}
 	for _, opt := range opts {
-		opt(paapi)
+		opt(server)
 	}
-	return &PaAPI{svcType: api.TypePAAPI, paapi: paapi}
+	return &PaAPI{svcType: api.TypePAAPI, server: server}
 }
 
 //WithMarketplace returns function for setting Marketplace
 func WithMarketplace(mp string) PaAPIOptFunc {
-	return func(aa *amazonproduct.AmazonProductAPI) {
-		if aa != nil {
-			aa.Host = mp
+	return func(s *Server) {
+		if s != nil {
+			s.marketplace = mp
 		}
 	}
 }
 
 //WithAssociateTag returns function for setting Associate Tag
 func WithAssociateTag(tag string) PaAPIOptFunc {
-	return func(aa *amazonproduct.AmazonProductAPI) {
-		if aa != nil {
-			aa.AssociateTag = tag
+	return func(s *Server) {
+		if s != nil {
+			s.associateTag = tag
 		}
 	}
 }
 
 //WithAccessKey returns function for setting Access Key
 func WithAccessKey(key string) PaAPIOptFunc {
-	return func(aa *amazonproduct.AmazonProductAPI) {
-		if aa != nil {
-			aa.AccessKey = key
+	return func(s *Server) {
+		if s != nil {
+			s.accessKey = key
 		}
 	}
 }
 
 //WithSecretKey returns function for setting Secret Access Key
 func WithSecretKey(key string) PaAPIOptFunc {
-	return func(aa *amazonproduct.AmazonProductAPI) {
-		if aa != nil {
-			aa.SecretKey = key
+	return func(s *Server) {
+		if s != nil {
+			s.secretKey = key
+		}
+	}
+}
+
+//WithSecretKey returns function for setting Secret Access Key
+func WithEnableISBN(isbn bool) PaAPIOptFunc {
+	return func(s *Server) {
+		if s != nil {
+			s.enableISBN = isbn
 		}
 	}
 }
@@ -74,37 +81,14 @@ func (a *PaAPI) Name() string {
 	return a.svcType.String()
 }
 
-//lookupXML returns XML data from PA-API
-func (a *PaAPI) lookupXML(id string) (io.Reader, error) {
-	params := map[string]string{
-		"IdType":        "ASIN",
-		"ResponseGroup": "Images,ItemAttributes,Small",
-		"ItemId":        id,
-	}
-	xml, err := a.paapi.ItemLookupWithParams(params)
-	if err != nil {
-		return nil, errs.Wrap(err, "error in PaAPI.lookupXML() function")
-	}
-	return bytes.NewBufferString(xml), nil
-}
-
-//unmarshalXML returns unmarshalled XML data
-func unmarshalXML(xmldata io.Reader) (*amazonproduct.ItemLookupResponse, error) {
-	res := &amazonproduct.ItemLookupResponse{}
-	if err := xml.NewDecoder(xmldata).Decode(res); err != nil {
-		return nil, errs.Wrap(err, "error in unmarshalXML() function")
-	}
-	return res, nil
-}
-
 ///LookupRawData returns PA-API raw data
 func (a *PaAPI) LookupRawData(id string) (io.Reader, error) {
-	return a.lookupXML(id)
+	return a.server.CreateClient().LookupXML(id)
 }
 
 ///LookupBook returns Book data from PA-API
 func (a *PaAPI) LookupBook(id string) (*entity.Book, error) {
-	data, err := a.lookupXML(id)
+	data, err := a.LookupRawData(id)
 	if err != nil {
 		return nil, errs.Wrap(err, "error in PaAPI.LookupBook() function")
 	}
@@ -165,6 +149,15 @@ func (a *PaAPI) LookupBook(id string) (*entity.Book, error) {
 		}
 	}
 	return book, nil
+}
+
+//unmarshalXML returns unmarshalled XML data
+func unmarshalXML(xmldata io.Reader) (*amazonproduct.ItemLookupResponse, error) {
+	res := &amazonproduct.ItemLookupResponse{}
+	if err := xml.NewDecoder(xmldata).Decode(res); err != nil {
+		return nil, errs.Wrap(err, "error in unmarshalXML() function")
+	}
+	return res, nil
 }
 
 /* Copyright 2019 Spiegel

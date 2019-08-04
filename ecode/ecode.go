@@ -8,17 +8,19 @@ type ECode int
 const (
 	ErrNullPointer ECode = iota + 1
 	ErrNoCommand
+	ErrInvalidAPIParameter
 	ErrInvalidAPIResponse
 	ErrNoData
 	ErrUnMatchServiceType
 )
 
 var errMessages = map[ECode]string{
-	ErrNullPointer:        "Null reference instance",
-	ErrNoCommand:          "No command",
-	ErrInvalidAPIResponse: "Invalid response data from API",
-	ErrNoData:             "No response data",
-	ErrUnMatchServiceType: "Unmatch service type",
+	ErrNullPointer:         "Null reference instance",
+	ErrNoCommand:           "No command",
+	ErrInvalidAPIParameter: "Invalid API parameters",
+	ErrInvalidAPIResponse:  "Invalid response data from API",
+	ErrNoData:              "No response data",
+	ErrUnMatchServiceType:  "Unmatch service type",
 }
 
 func (e ECode) Error() string {

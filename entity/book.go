@@ -3,8 +3,12 @@ package entity
 import (
 	"encoding/json"
 	"fmt"
+	"io"
 
+	"github.com/spiegel-im-spiegel/books-data/ecode"
 	"github.com/spiegel-im-spiegel/books-data/entity/values"
+	"github.com/spiegel-im-spiegel/books-data/format"
+	"github.com/spiegel-im-spiegel/errs"
 )
 
 //Code is entity class of book code
@@ -59,8 +63,34 @@ type Book struct {
 	}
 }
 
+//ImportBookFromJSON import Reviews data with JSON format
+func ImportBookFromJSON(r io.Reader) (*Book, error) {
+	dec := json.NewDecoder(r)
+	bk := Book{}
+	err := dec.Decode(&bk)
+	return &bk, errs.Wrap(err, "error in entity.ImportBookFromJSON() function")
+}
+
+func (b *Book) Format(tmpltPath string) ([]byte, error) {
+	if b == nil {
+		return nil, errs.Wrap(ecode.ErrNullPointer, "error in Book.Format() function")
+	}
+	if len(tmpltPath) == 0 {
+		b, err := json.Marshal(b)
+		if err != nil {
+			return nil, errs.Wrap(err, "error in Book.Format() function")
+		}
+		return b, nil
+	}
+	buf, err := format.ByTemplateFile(b, tmpltPath)
+	if err != nil {
+		return buf.Bytes(), errs.Wrap(err, "error in Book.Format() function")
+	}
+	return buf.Bytes(), nil
+}
+
 func (b *Book) String() string {
-	res, err := json.Marshal(b)
+	res, err := b.Format("")
 	if err != nil {
 		return ""
 	}

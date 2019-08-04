@@ -28,7 +28,7 @@ func (c CommandType) String() string {
 	return ""
 }
 
-//Server is informations of OpenPGP key server
+//Server is informations of openBD service
 type Server struct {
 	svcType api.ServiceType //Service Type
 	cmd     CommandType     //Type of openBD commands

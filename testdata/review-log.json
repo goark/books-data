@@ -1,0 +1,99 @@
+[
+  {
+    "Book": {
+      "Type": "paapi",
+      "ID": "B07TS9XTSD",
+      "Title": "三体",
+      "URL": "https://www.amazon.co.jp/exec/obidos/ASIN/B07TS9XTSD/baldandersinf-22/",
+      "Image": {
+        "URL": "https://images-fe.ssl-images-amazon.com/images/I/41H5EUGcemL._SL160_.jpg",
+        "Height": 160,
+        "Width": 110
+      },
+      "ProductType": "Kindle版",
+      "Authors": [
+        "劉 慈欣"
+      ],
+      "Creators": [
+        {
+          "Name": "大森 望",
+          "Role": "翻訳"
+        },
+        {
+          "Name": "光吉 さくら",
+          "Role": "翻訳"
+        },
+        {
+          "Name": "ワン チャイ",
+          "Role": "翻訳"
+        },
+        {
+          "Name": "立原 透耶",
+          "Role": "監修"
+        }
+      ],
+      "Publisher": "早川書房",
+      "Codes": [
+        {
+          "Name": "ASIN",
+          "Value": "B07TS9XTSD"
+        }
+      ],
+      "PublicationDate": "2019-07-04",
+      "LastRelease": "2019-07-04",
+      "Service": {
+        "Name": "PA-API",
+        "URL": "https://affiliate.amazon.co.jp/assoc_credentials/home"
+      }
+    },
+    "Date": "2019-07-14",
+    "Rating": 4,
+    "Star": [
+      true,
+      true,
+      true,
+      true,
+      false
+    ],
+    "Description": "流行ってるらしいので買ってみた。 Kindle の肥やしにならないことを祈ろう（読めって！）。"
+  },
+  {
+    "Book": {
+      "Type": "openbd",
+      "ID": "9784152098702",
+      "Title": "三体",
+      "Image": {
+        "URL": "https://cover.openbd.jp/9784152098702.jpg",
+        "Height": 0,
+        "Width": 0
+      },
+      "ProductType": "Book",
+      "Authors": [
+        "劉慈欣／著 大森望／翻訳 光吉さくら／翻訳 ワンチャイ／翻訳 立原透耶／監修"
+      ],
+      "Publisher": "早川書房",
+      "Codes": [
+        {
+          "Name": "ISBN",
+          "Value": "9784152098702"
+        }
+      ],
+      "PublicationDate": "2019-07-04",
+      "LastRelease": "0001-01-01",
+      "Service": {
+        "Name": "openBD",
+        "URL": "https://openbd.jp/"
+      }
+    },
+    "Date": "2019-07-14",
+    "Rating": 4,
+    "Star": [
+      true,
+      true,
+      true,
+      true,
+      false
+    ],
+    "Description": "流行ってるらしいので買ってみた。 Kindle の肥やしにならないことを祈ろう（読めって！）。"
+  }
+]
