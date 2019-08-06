@@ -124,7 +124,7 @@ Global Flags:
       }
     ],
     "PublicationDate": "2013-10-26",
-    "LastRelease": "0001-01-01",
+    "LastRelease": "",
     "Service": {
       "Name": "PA-API",
       "URL": "https://affiliate.amazon.co.jp/assoc_credentials/home"
@@ -201,7 +201,7 @@ $ books-data review -i 427406932X -r 5 "This book is Interesting." | jq .
       }
     ],
     "PublicationDate": "2013-10-26",
-    "LastRelease": "0001-01-01",
+    "LastRelease": "",
     "Service": {
       "Name": "PA-API",
       "URL": "https://affiliate.amazon.co.jp/assoc_credentials/home"
@@ -262,7 +262,7 @@ $ cat ~/review-log.json
         }
       ],
       "PublicationDate": "2013-10-26",
-      "LastRelease": "0001-01-01",
+      "LastRelease": "",
       "Service": {
         "Name": "PA-API",
         "URL": "https://affiliate.amazon.co.jp/assoc_credentials/home"
@@ -348,7 +348,7 @@ $ books-data history -a 427406932X | jq .
       }
     ],
     "PublicationDate": "2013-10-26",
-    "LastRelease": "0001-01-01",
+    "LastRelease": "",
     "Service": {
       "Name": "PA-API",
       "URL": "https://affiliate.amazon.co.jp/assoc_credentials/home"

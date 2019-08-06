@@ -22,6 +22,7 @@ func TestUnmarshal(t *testing.T) {
 		{s: `{"date_taken": "20050326"}`, str: "2005-03-26", jsn: `{"date_taken":"2005-03-26"}`},
 		{s: `{"date_taken": "200503"}`, str: "2005-03-01", jsn: `{"date_taken":"2005-03-01"}`},
 		{s: `{"date_taken": ""}`, str: "0001-01-01", jsn: `{"date_taken":""}`},
+		{s: `{}`, str: "0001-01-01", jsn: `{"date_taken":""}`},
 	}
 
 	for _, tc := range testCases {

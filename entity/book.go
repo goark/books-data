@@ -47,8 +47,8 @@ type Book struct {
 	URL         string `json:",omitempty"`
 	Image       struct {
 		URL    string
-		Height uint16
-		Width  uint16
+		Height uint16 `json:",omitempty"`
+		Width  uint16 `json:",omitempty"`
 	}
 	ProductType     string `json:",omitempty"`
 	Authors         []string

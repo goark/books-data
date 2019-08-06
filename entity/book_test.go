@@ -59,11 +59,11 @@ var bookTestCases = []struct {
 			URL:         "URL",
 			Image: struct {
 				URL    string
-				Height uint16
-				Width  uint16
+				Height uint16 `json:",omitempty"`
+				Width  uint16 `json:",omitempty"`
 			}{
 				URL:    "url",
-				Height: 100,
+				Height: 0,
 				Width:  100,
 			},
 			ProductType: "ProductType",
@@ -87,7 +87,7 @@ var bookTestCases = []struct {
 				URL:  "URL",
 			},
 		},
-		str: `{"Type":"Type","ID":"ID","Title":"Title","SubTitle":"SubTitle","SeriesTitle":"SeriesTitle","URL":"URL","Image":{"URL":"url","Height":100,"Width":100},"ProductType":"ProductType","Authors":["Author1","Author2"],"Creators":[{"Name":"Name1","Role":"Role1"},{"Name":"Name2","Role":"Role2"}],"Publisher":"Publisher","Codes":[{"Name":"Name1","Value":"Value1"},{"Name":"Name2","Value":"Value2"}],"PublicationDate":"","LastRelease":"","Service":{"Name":"Name","URL":"URL"}}`,
+		str: `{"Type":"Type","ID":"ID","Title":"Title","SubTitle":"SubTitle","SeriesTitle":"SeriesTitle","URL":"URL","Image":{"URL":"url","Width":100},"ProductType":"ProductType","Authors":["Author1","Author2"],"Creators":[{"Name":"Name1","Role":"Role1"},{"Name":"Name2","Role":"Role2"}],"Publisher":"Publisher","Codes":[{"Name":"Name1","Value":"Value1"},{"Name":"Name2","Value":"Value2"}],"PublicationDate":"","LastRelease":"","Service":{"Name":"Name","URL":"URL"}}`,
 	},
 }
 
