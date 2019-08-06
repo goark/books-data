@@ -1,6 +1,6 @@
 @BOOK{Book:{{ .ID }},
     TITLE = "{{ .Title }}",
     AUTHOR = "{{ range $i, $v := .Authors }}{{ if ne $i 0 }} and {{ end }}{{ $v }}{{ end }}{{ with .Creators }}{{ range . }} and {{ . }}{{ end }}{{ end }}"{{ if .Publisher }},
-    PUBLISHER = {{ "{" }}{{ .Publisher }}{{ "}" }}{{ end }}{{ if gt .PublicationDate.Year 1 }},
+    PUBLISHER = {{ "{" }}{{ .Publisher }}{{ "}" }}{{ end }}{{ if not .PublicationDate.IsZero }},
     YEAR = {{ .PublicationDate.Year }}{{ end }}
 }

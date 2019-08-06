@@ -7,36 +7,47 @@ import (
 )
 
 type ForTestStruct struct {
-	DateTaken    Date `json:"date_taken"`
-	DateImported Date `json:"date_imported"`
+	DateTaken Date `json:"date_taken,omitempty"`
 }
 
 func TestUnmarshal(t *testing.T) {
-	data := `
-{
-	"date_taken": "2005-03-26",
-	"date_imported": "2005-03-25T20:10:13+00:00"
-}
-`
-	res := `{"date_taken":"2005-03-26","date_imported":"2005-03-25"}`
-	tst := &ForTestStruct{}
-	if err := json.Unmarshal([]byte(data), tst); err != nil {
-		t.Errorf("Unmarshal() = \"%v\", want nil.", err)
-		return
+	testCases := []struct {
+		s   string
+		str string
+		jsn string
+	}{
+		{s: `{"date_taken": "2005-03-26T00:00:00+09:00"}`, str: "2005-03-26", jsn: `{"date_taken":"2005-03-26"}`},
+		{s: `{"date_taken": "2005-03-26"}`, str: "2005-03-26", jsn: `{"date_taken":"2005-03-26"}`},
+		{s: `{"date_taken": "2005-03"}`, str: "2005-03-01", jsn: `{"date_taken":"2005-03-01"}`},
+		{s: `{"date_taken": "20050326"}`, str: "2005-03-26", jsn: `{"date_taken":"2005-03-26"}`},
+		{s: `{"date_taken": "200503"}`, str: "2005-03-01", jsn: `{"date_taken":"2005-03-01"}`},
+		{s: `{"date_taken": ""}`, str: "0001-01-01", jsn: `{"date_taken":""}`},
 	}
-	if b, err := json.Marshal(tst); err != nil {
-		t.Errorf("json.Marshal() = \"%v\", want nil.", err)
-	} else if string(b) != res {
-		t.Errorf("JSON of ForTestStruct = \"%v\", want \"%v\".", string(b), res)
+
+	for _, tc := range testCases {
+		tst := &ForTestStruct{}
+		if err := json.Unmarshal([]byte(tc.s), tst); err != nil {
+			t.Errorf("json.Unmarshal() is \"%v\", want nil.", err)
+			continue
+		}
+		str := tst.DateTaken.String()
+		if str != tc.str {
+			t.Errorf("Date = \"%v\", want \"%v\".", str, tc.str)
+		}
+		b, err := json.Marshal(tst)
+		if err != nil {
+			t.Errorf("json.Marshal() is \"%v\", want nil.", err)
+			continue
+		}
+		str = string(b)
+		if str != tc.jsn {
+			t.Errorf("ForTestStruct = \"%v\", want \"%v\".", str, tc.jsn)
+		}
 	}
 }
 
 func TestUnmarshalErr(t *testing.T) {
-	data := `
-{
-	"date_taken": "2005/03/26"
-}
-`
+	data := `{"date_taken": "2005/03/26"}`
 	tst := &ForTestStruct{}
 	if err := json.Unmarshal([]byte(data), tst); err == nil {
 		t.Error("Unmarshal() error = nil, not want nil.")

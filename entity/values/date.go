@@ -4,8 +4,6 @@ import (
 	"fmt"
 	"strings"
 	"time"
-
-	"github.com/spiegel-im-spiegel/errs"
 )
 
 //Time is wrapper class of time.Time
@@ -21,21 +19,47 @@ func NewDate(tm time.Time) Date {
 //UnmarshalJSON returns result of Unmarshal for json.Unmarshal()
 func (t *Date) UnmarshalJSON(b []byte) error {
 	s := strings.Trim(string(b), "\"")
-	tm, err := time.Parse(time.RFC3339, s+"T09:00:00Z")
-	if err != nil {
+	if len(s) == 0 {
+		*t = Date{time.Time{}}
+		return nil
+	}
+	if strings.Contains(s, "-") {
+		tm, err := time.Parse("2006-01-02", s)
+		if err == nil {
+			*t = Date{tm}
+			return nil
+		}
+		tm, err = time.Parse("2006-01", s)
+		if err == nil {
+			*t = Date{tm}
+			return nil
+		}
 		tm, err = time.Parse(time.RFC3339, s)
-		if err != nil {
-			return errs.Wrap(err, "error in unmarshaling JSON to Date type")
+		if err == nil {
+			*t = Date{tm}
+			return nil
 		}
 	}
-	*t = Date{tm}
-	return nil
+	tm, err := time.Parse("20060102", s)
+	if err == nil {
+		*t = Date{tm}
+		return nil
+	}
+	tm, err = time.Parse("200601", s)
+	if err == nil {
+		*t = Date{tm}
+		return nil
+	}
+	return err
 }
 
 //MarshalJSON returns time string with RFC3339 format
 func (t *Date) MarshalJSON() ([]byte, error) {
 	if t == nil {
-		return []byte("null"), nil
+		return []byte("\"\""), nil
+	}
+	if t.IsZero() {
+		return []byte("\"\""), nil
 	}
 	return []byte(fmt.Sprintf("\"%v\"", t)), nil
 }

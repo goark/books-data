@@ -14,7 +14,7 @@ func TestHistory(t *testing.T) {
 		out    string
 		outErr string
 	}{
-		{args: []string{"history", "-i", "9784152098702", "-l", "../testdata/review-log.json"}, out: `{"Book":{"Type":"openbd","ID":"9784152098702","Title":"三体","Image":{"URL":"https://cover.openbd.jp/9784152098702.jpg","Height":0,"Width":0},"ProductType":"Book","Authors":["劉慈欣／著 大森望／翻訳 光吉さくら／翻訳 ワンチャイ／翻訳 立原透耶／監修"],"Publisher":"早川書房","Codes":[{"Name":"ISBN","Value":"9784152098702"}],"PublicationDate":"2019-07-04","LastRelease":"0001-01-01","Service":{"Name":"openBD","URL":"https://openbd.jp/"}},"Date":"2019-07-14","Rating":4,"Star":[true,true,true,true,false],"Description":"流行ってるらしいので買ってみた。 Kindle の肥やしにならないことを祈ろう（読めって！）。"}`, outErr: ""},
+		{args: []string{"history", "-i", "9784152098702", "-l", "../testdata/review-log.json"}, out: `{"Book":{"Type":"openbd","ID":"9784152098702","Title":"三体","Image":{"URL":"https://cover.openbd.jp/9784152098702.jpg","Height":0,"Width":0},"ProductType":"Book","Authors":["劉慈欣／著 大森望／翻訳 光吉さくら／翻訳 ワンチャイ／翻訳 立原透耶／監修"],"Publisher":"早川書房","Codes":[{"Name":"ISBN","Value":"9784152098702"}],"PublicationDate":"2019-07-04","LastRelease":"","Service":{"Name":"openBD","URL":"https://openbd.jp/"}},"Date":"2019-07-14","Rating":4,"Star":[true,true,true,true,false],"Description":"流行ってるらしいので買ってみた。 Kindle の肥やしにならないことを祈ろう（読めって！）。"}`, outErr: ""},
 	}
 
 	for _, tc := range testCases {
