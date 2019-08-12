@@ -2,9 +2,9 @@ package facade
 
 import (
 	"fmt"
+	"os"
 	"runtime"
 
-	"github.com/mitchellh/go-homedir"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/spiegel-im-spiegel/books-data/ecode"
@@ -79,7 +79,7 @@ func initConfig() {
 		viper.SetConfigFile(cfgFile)
 	} else {
 		// Find home directory.
-		home, err := homedir.Dir()
+		home, err := os.UserHomeDir()
 		if err != nil {
 			panic(err)
 		}
