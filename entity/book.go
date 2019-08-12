@@ -37,30 +37,39 @@ func (c Creator) String() string {
 	return c.Name
 }
 
+//BookCover is entity class of book cover image info.
+type BookCover struct {
+	URL    string
+	Height uint16 `json:",omitempty"`
+	Width  uint16 `json:",omitempty"`
+}
+
+//Service is entity class of API service info.
+type Service struct {
+	Name string
+	URL  string
+}
+
 //Book is entity class of information for book
 type Book struct {
-	Type        string
-	ID          string
-	Title       string
-	SubTitle    string `json:",omitempty"`
-	SeriesTitle string `json:",omitempty"`
-	URL         string `json:",omitempty"`
-	Image       struct {
-		URL    string
-		Height uint16 `json:",omitempty"`
-		Width  uint16 `json:",omitempty"`
-	}
+	Type            string
+	ID              string
+	Title           string
+	SubTitle        string `json:",omitempty"`
+	SeriesTitle     string `json:",omitempty"`
+	OriginalTitle   string `json:",omitempty"`
+	URL             string `json:",omitempty"`
+	Image           BookCover
 	ProductType     string `json:",omitempty"`
 	Authors         []string
 	Creators        []Creator `json:",omitempty"`
-	Publisher       string
+	Publisher       string    `json:",omitempty"`
 	Codes           []Code
 	PublicationDate values.Date
 	LastRelease     values.Date
-	Service         struct {
-		Name string
-		URL  string
-	}
+	PublicDomain    bool   `json:",omitempty"`
+	FirstAppearance string `json:",omitempty"`
+	Service         Service
 }
 
 //ImportBookFromJSON import Reviews data with JSON format

@@ -1,25 +1,31 @@
-package api
+package facade
 
-import "testing"
+import (
+	"bytes"
+	"io"
 
-func TestServiceType(t *testing.T) {
-	testCases := []struct {
-		t   ServiceType
-		str string
-	}{
-		{t: TypeOthers, str: "others"},
-		{t: TypePAAPI, str: "paapi"},
-		{t: TypeOpenBD, str: "openbd"},
-		{t: TypeAozoraAPI, str: "aozora"},
-		{t: ServiceType(4), str: "others"},
+	"github.com/spiegel-im-spiegel/books-data/api/aozoraapi"
+	"github.com/spiegel-im-spiegel/books-data/entity"
+)
+
+func searchAozoraAPI(id string, rawFlag bool) (io.Reader, error) {
+	aozora := aozoraapi.New()
+	if rawFlag {
+		return aozora.LookupRawData(id)
 	}
-
-	for _, tc := range testCases {
-		s := tc.t.String()
-		if s != tc.str {
-			t.Errorf("\"%v\" != \"%v\"", s, tc.str)
-		}
+	book, err := aozora.LookupBook(id)
+	if err != nil {
+		return nil, err
 	}
+	b, err := book.Format(tmpltPath)
+	if err != nil {
+		return nil, err
+	}
+	return bytes.NewReader(b), nil
+}
+
+func findAozoraAPI(id string) (*entity.Book, error) {
+	return aozoraapi.New().LookupBook(id)
 }
 
 /* Copyright 2019 Spiegel

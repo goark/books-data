@@ -4,22 +4,24 @@ package api
 type ServiceType int
 
 const (
-	TypePAAPI ServiceType = iota + 1
+	TypeOthers ServiceType = iota
+	TypePAAPI
 	TypeOpenBD
-	TypeOthers
+	TypeAozoraAPI
 )
 
 var strTypes = map[ServiceType]string{
-	TypePAAPI:  "paapi",
-	TypeOpenBD: "openbd",
-	TypeOthers: "others",
+	TypeOthers:    "others",
+	TypePAAPI:     "paapi",
+	TypeOpenBD:    "openbd",
+	TypeAozoraAPI: "aozora",
 }
 
 func (t ServiceType) String() string {
 	if s, ok := strTypes[t]; ok {
 		return s
 	}
-	return "unknown"
+	return strTypes[TypeOthers]
 }
 
 /* Copyright 2019 Spiegel

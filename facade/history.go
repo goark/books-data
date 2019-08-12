@@ -20,14 +20,14 @@ func newHistroyCmd(ui *rwi.RWI) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			logf := viper.GetString("review-log")
 			if len(logf) == 0 {
-				return debugPrint(ui, errs.Wrap(ecode.ErrNoData, "error in facade.historyCmd"))
+				return debugPrint(ui, errs.Wrap(ecode.ErrNoData, "error in history command"))
 			}
 			revs, err := logger.ImportJSONFile(logf)
 			if err != nil {
 				return debugPrint(ui, err)
 			}
 			if len(revs) == 0 {
-				return debugPrint(ui, errs.Wrap(ecode.ErrNoData, "error in facade.historyCmd"))
+				return debugPrint(ui, errs.Wrap(ecode.ErrNoData, "error in history command"))
 			}
 
 			var rev *review.Review = nil
@@ -39,8 +39,12 @@ func newHistroyCmd(ui *rwi.RWI) *cobra.Command {
 			if rev == nil && len(isbn) > 0 {
 				rev = revs.Find(api.TypeOpenBD.String(), isbn)
 			}
+			//Search by Aozora-bunko card no.
+			if rev == nil && len(card) > 0 {
+				rev = revs.Find(api.TypeAozoraAPI.String(), card)
+			}
 			if rev == nil {
-				return debugPrint(ui, errs.Wrap(ecode.ErrNoData, "error in facade.historyCmd"))
+				return debugPrint(ui, errs.Wrap(ecode.ErrNoData, "error in history command"))
 			}
 
 			b, err := rev.Format(tmpltPath)

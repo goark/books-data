@@ -18,16 +18,9 @@ type OpenBD struct {
 	server *Server //server info.
 }
 
-//ServerOptFunc is self-referential function for functional options pattern
-type ServerOptFunc func(*Server)
-
 //New returns OpenBD instance
-func New(cmd CommandType, opts ...ServerOptFunc) api.API {
-	sv := &Server{svcType: api.TypeOpenBD, cmd: cmd}
-	for _, opt := range opts {
-		opt(sv)
-	}
-	return &OpenBD{server: sv}
+func New(cmd CommandType) api.API {
+	return &OpenBD{server: &Server{svcType: api.TypeOpenBD, cmd: cmd}}
 }
 
 //Name returns name of API
@@ -63,21 +56,14 @@ func (a *OpenBD) LookupBook(id string) (*entity.Book, error) {
 		ID:          bd.GetISBN(),
 		Title:       bd.GetTitle(),
 		SeriesTitle: bd.GetSeries(),
-		Image: struct {
-			URL    string
-			Height uint16
-			Width  uint16
-		}{
+		Image: entity.BookCover{
 			URL: bd.GetImageLink(),
 		},
 		ProductType: "Book",
 		Codes:       []entity.Code{entity.Code{Name: "ISBN", Value: bd.GetISBN()}},
 		Authors:     []string{bd.GetAuthor()},
 		Publisher:   bd.GetPublisher(),
-		Service: struct {
-			Name string
-			URL  string
-		}{Name: "openBD", URL: "https://openbd.jp/"},
+		Service:     entity.Service{Name: "openBD", URL: "https://openbd.jp/"},
 	}
 	if tm, err := bd.GetPubdate(); err == nil {
 		book.PublicationDate = values.NewDate(tm)

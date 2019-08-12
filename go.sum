@@ -94,6 +94,10 @@ github.com/spf13/pflag v1.0.3/go.mod h1:DYY7MBk1bdzusC3SYhjObp+wFpr4gzcvqqNjLnIn
 github.com/spf13/viper v1.3.2/go.mod h1:ZiWeW+zYFKm7srdB9IoDzzZXaJaI5eL9QjNiN/DMA2s=
 github.com/spf13/viper v1.4.0 h1:yXHLWeravcrgGyFSyCgdYpXQ9dR9c/WED3pg1RhxqEU=
 github.com/spf13/viper v1.4.0/go.mod h1:PTJ7Z/lr49W6bUbkmS1V3by4uWynFiR9p7+dSq/yZzE=
+github.com/spiegel-im-spiegel/aozora-api v0.1.0 h1:qKvQARqOGrwaXGoDEu74lu4nagZhVtw0yRiljPOvDA0=
+github.com/spiegel-im-spiegel/aozora-api v0.1.0/go.mod h1:NtaYWh6OqHZ5tcn4k/6VlViKi1c9JoxR+Ta86qypy4U=
+github.com/spiegel-im-spiegel/aozora-api v0.1.1 h1:ymbDXHRqa/VCgpZEm2EOVTPmYcGxC2L/WFJiqobp+70=
+github.com/spiegel-im-spiegel/aozora-api v0.1.1/go.mod h1:NtaYWh6OqHZ5tcn4k/6VlViKi1c9JoxR+Ta86qypy4U=
 github.com/spiegel-im-spiegel/errs v0.1.0 h1:ApPd5JMUh8ycLy+ajCdaIKk+mi4bZH+n2UDRNGKzqh8=
 github.com/spiegel-im-spiegel/errs v0.1.0/go.mod h1:1sdokz9v67uzQ8eAMVZsA5Wm3iaRhy4VUWCB0o3xkcs=
 github.com/spiegel-im-spiegel/gocli v0.9.5 h1:jMISMJ3L+qtUnBvRHluiYbpkk5YjmnWa169MP6439IQ=

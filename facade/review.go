@@ -37,6 +37,16 @@ func newReviewCmd(ui *rwi.RWI) *cobra.Command {
 			if err != nil {
 				return errs.Wrap(err, "--review-date")
 			}
+			//URL of book page
+			bookpage, err := cmd.Flags().GetString("bookpage-url")
+			if err != nil {
+				return errs.Wrap(err, "--bookpage-url")
+			}
+			//URL of book cover image
+			bookcover, err := cmd.Flags().GetString("image-url")
+			if err != nil {
+				return errs.Wrap(err, "--image-url")
+			}
 			//Description
 			desc := ""
 			if pipeFlag {
@@ -81,8 +91,17 @@ func newReviewCmd(ui *rwi.RWI) *cobra.Command {
 					}
 				}
 			}
+			if bk == nil && len(card) > 0 {
+				//by Aozora-API
+				bk, err = findAozoraAPI(card)
+				if err != nil {
+					if !checkError(err) {
+						return debugPrint(ui, err)
+					}
+				}
+			}
 			if err == nil && bk == nil {
-				err = errs.Wrap(ecode.ErrNoData, "error in facade.reviewCmd")
+				err = errs.Wrap(ecode.ErrNoData, "error in review command")
 			}
 			if err != nil {
 				return debugPrint(ui, err)
@@ -93,6 +112,8 @@ func newReviewCmd(ui *rwi.RWI) *cobra.Command {
 				review.WithDate(dt),
 				review.WithRating(rating),
 				review.WithDescription(desc),
+				review.WithBookPage(bookpage),
+				review.WithBookCover(bookcover),
 			)
 			if err := updateReviewLog(rev); err != nil {
 				return debugPrint(ui, err)
@@ -107,6 +128,8 @@ func newReviewCmd(ui *rwi.RWI) *cobra.Command {
 	//options
 	reviewCmd.Flags().IntP("rating", "r", 0, "Rating of product")
 	reviewCmd.Flags().StringP("review-date", "", "", "Date of review")
+	reviewCmd.Flags().StringP("bookpage-url", "", "", "URL of book page")
+	reviewCmd.Flags().StringP("image-url", "", "", "URL of book cover image")
 	reviewCmd.Flags().BoolP("pipe", "", false, "Import description from Stdin")
 
 	return reviewCmd

@@ -19,7 +19,7 @@ func NewDate(tm time.Time) Date {
 //UnmarshalJSON returns result of Unmarshal for json.Unmarshal()
 func (t *Date) UnmarshalJSON(b []byte) error {
 	s := strings.Trim(string(b), "\"")
-	if len(s) == 0 {
+	if len(s) == 0 || strings.ToLower(s) == "null" {
 		*t = Date{time.Time{}}
 		return nil
 	}
@@ -39,6 +39,7 @@ func (t *Date) UnmarshalJSON(b []byte) error {
 			*t = Date{tm}
 			return nil
 		}
+		return err
 	}
 	tm, err := time.Parse("20060102", s)
 	if err == nil {

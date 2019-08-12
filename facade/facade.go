@@ -24,6 +24,7 @@ var (
 	cfgFile   string //config file
 	asin      string //ASIN code
 	isbn      string //ISBN code
+	card      string //Aozora-bunko card no.
 	tmpltPath string //template file path
 )
 
@@ -65,6 +66,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 	rootCmd.PersistentFlags().BoolVarP(&debugFlag, "debug", "", false, "for debug")
 	rootCmd.PersistentFlags().StringVarP(&asin, "asin", "a", "", "Amazon ASIN code")
 	rootCmd.PersistentFlags().StringVarP(&isbn, "isbn", "i", "", "ISBN code")
+	rootCmd.PersistentFlags().StringVarP(&card, "aozora-card", "c", "", "Aozora-bunko card no.")
 	rootCmd.PersistentFlags().StringVarP(&tmpltPath, "template-file", "t", "", "Template file for formatted output")
 
 	return rootCmd

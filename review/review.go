@@ -60,6 +60,24 @@ func WithDescription(s string) ReviewOptFunc {
 	}
 }
 
+//WithBookPage returns function for setting IdType
+func WithBookPage(url string) ReviewOptFunc {
+	return func(rev *Review) {
+		if rev != nil && len(rev.Book.URL) == 0 {
+			rev.Book.URL = url
+		}
+	}
+}
+
+//WithBookCover returns function for setting IdType
+func WithBookCover(url string) ReviewOptFunc {
+	return func(rev *Review) {
+		if rev != nil && len(rev.Book.Image.URL) == 0 {
+			rev.Book.Image.URL = url
+		}
+	}
+}
+
 //SetRating sets rating value of book
 func (rev *Review) SetRating(r int) *Review {
 	if rev == nil {

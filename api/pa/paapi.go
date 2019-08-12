@@ -108,11 +108,7 @@ func (a *PaAPI) LookupBook(id string) (*entity.Book, error) {
 		ID:    item.ASIN,
 		Title: item.ItemAttributes.Title,
 		URL:   item.DetailPageURL,
-		Image: struct {
-			URL    string
-			Height uint16
-			Width  uint16
-		}{
+		Image: entity.BookCover{
 			URL:    item.MediumImage.URL,
 			Height: item.MediumImage.Height,
 			Width:  item.MediumImage.Width,
@@ -121,10 +117,7 @@ func (a *PaAPI) LookupBook(id string) (*entity.Book, error) {
 		Codes:       []entity.Code{entity.Code{Name: "ASIN", Value: item.ASIN}},
 		Authors:     item.ItemAttributes.Author,
 		Publisher:   item.ItemAttributes.Publisher,
-		Service: struct {
-			Name string
-			URL  string
-		}{Name: "PA-API", URL: "https://affiliate.amazon.co.jp/assoc_credentials/home"},
+		Service:     entity.Service{Name: "PA-API", URL: "https://affiliate.amazon.co.jp/assoc_credentials/home"},
 	}
 	if len(item.ItemAttributes.Creator) > 0 {
 		book.Creators = []entity.Creator{}
@@ -139,12 +132,12 @@ func (a *PaAPI) LookupBook(id string) (*entity.Book, error) {
 		book.Codes = append(book.Codes, entity.Code{Name: "EISBN", Value: item.ItemAttributes.EISBN})
 	}
 	if len(item.ItemAttributes.PublicationDate) > 0 {
-		if tm, err := time.Parse(time.RFC3339, item.ItemAttributes.PublicationDate+"T09:00:00Z"); err == nil {
+		if tm, err := time.Parse("2006-01-02", item.ItemAttributes.PublicationDate); err == nil {
 			book.PublicationDate = values.NewDate(tm)
 		}
 	}
 	if len(item.ItemAttributes.ReleaseDate) > 0 {
-		if tm, err := time.Parse(time.RFC3339, item.ItemAttributes.ReleaseDate+"T09:00:00Z"); err == nil {
+		if tm, err := time.Parse("2006-01-02", item.ItemAttributes.ReleaseDate); err == nil {
 			book.LastRelease = values.NewDate(tm)
 		}
 	}

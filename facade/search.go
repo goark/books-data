@@ -24,37 +24,44 @@ func newSearchCmd(ui *rwi.RWI) *cobra.Command {
 			//Search by ASIN code
 			if len(asin) > 0 {
 				r, err := searchPAAPI(asin, false, rawFlag)
-				if err != nil {
-					if !checkError(err) {
-						return debugPrint(ui, err)
-					}
-					lastError = err
-				} else {
+				if err == nil {
 					return debugPrint(ui, ui.WriteFrom(r))
 				}
+				if !checkError(err) {
+					return debugPrint(ui, err)
+				}
+				lastError = err
 			}
 			//Search by ISBN code
 			if len(isbn) > 0 {
 				//by PA-API
 				r, err := searchPAAPI(isbn, true, rawFlag)
-				if err != nil {
-					if !checkError(err) {
-						return debugPrint(ui, err)
-					}
-					lastError = err
-				} else {
+				if err == nil {
 					return debugPrint(ui, ui.WriteFrom(r))
+				}
+				if !checkError(err) {
+					return debugPrint(ui, err)
 				}
 				//by openBD
 				r, err = searchOpenBD(isbn, rawFlag)
-				if err != nil {
-					if !checkError(err) {
-						return debugPrint(ui, err)
-					}
-					lastError = err
-				} else {
+				if err == nil {
 					return debugPrint(ui, ui.WriteFrom(r))
 				}
+				if !checkError(err) {
+					return debugPrint(ui, err)
+				}
+				lastError = err
+			}
+			if len(card) > 0 {
+				//by Aozora-API
+				r, err := searchAozoraAPI(card, rawFlag)
+				if err == nil {
+					return debugPrint(ui, ui.WriteFrom(r))
+				}
+				if !checkError(err) {
+					return debugPrint(ui, err)
+				}
+				lastError = err
 			}
 			return debugPrint(ui, lastError)
 		},
