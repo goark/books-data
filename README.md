@@ -33,6 +33,7 @@ Available Commands:
 
 Flags:
       --access-key string      Config: PA-API Access Key ID
+  -c, --aozora-card string     Aozora-bunko card no.
   -a, --asin string            Amazon ASIN code
       --associate-tag string   Config: PA-API Associate Tag
       --config string          Config file (default $HOME/.books-data.yaml)
@@ -50,7 +51,7 @@ Use "books-data [command] --help" for more information about a command.
 ### Config file
 
 ```text
-$ cat ~/.paapi.yaml
+$ cat ~/.books-data.yaml
 marketplace: webservices.amazon.co.jp
 associate-tag: mytag-20
 access-key: AKIAIOSFODNN7EXAMPLE
@@ -73,6 +74,7 @@ Flags:
 
 Global Flags:
       --access-key string      Config: PA-API Access Key ID
+  -c, --aozora-card string     Aozora-bunko card no.
   -a, --asin string            Amazon ASIN code
       --associate-tag string   Config: PA-API Associate Tag
       --config string          Config file (default $HOME/.books-data.yaml)
@@ -83,53 +85,53 @@ Global Flags:
       --secret-key string      Config: PA-API Secret Access Key
   -t, --template-file string   Template file for formatted output
 
-  $ books-data search -a 427406932X | jq .
-  {
-    "Type": "paapi",
-    "ID": "427406932X",
-    "Title": "リーン開発の現場 カンバンによる大規模プロジェクトの運営",
-    "URL": "https://www.amazon.co.jp/exec/obidos/ASIN/427406932X/baldandersinf-22/",
-    "Image": {
-      "URL": "https://images-fe.ssl-images-amazon.com/images/I/51llL1uygcL._SL160_.jpg",
-      "Height": 160,
-      "Width": 116
+$ books-data search -a 427406932X | jq .
+{
+  "Type": "paapi",
+  "ID": "427406932X",
+  "Title": "リーン開発の現場 カンバンによる大規模プロジェクトの運営",
+  "URL": "https://www.amazon.co.jp/exec/obidos/ASIN/427406932X/baldandersinf-22/",
+  "Image": {
+    "URL": "https://images-fe.ssl-images-amazon.com/images/I/51llL1uygcL._SL160_.jpg",
+    "Height": 160,
+    "Width": 116
+  },
+  "ProductType": "単行本（ソフトカバー）",
+  "Authors": [
+    "Henrik Kniberg"
+  ],
+  "Creators": [
+    {
+      "Name": "角谷 信太郎",
+      "Role": "翻訳"
     },
-    "ProductType": "単行本（ソフトカバー）",
-    "Authors": [
-      "Henrik Kniberg"
-    ],
-    "Creators": [
-      {
-        "Name": "角谷 信太郎",
-        "Role": "翻訳"
-      },
-      {
-        "Name": "市谷 聡啓",
-        "Role": "翻訳"
-      },
-      {
-        "Name": "藤原 大",
-        "Role": "翻訳"
-      }
-    ],
-    "Publisher": "オーム社",
-    "Codes": [
-      {
-        "Name": "ASIN",
-        "Value": "427406932X"
-      },
-      {
-        "Name": "EAN",
-        "Value": "9784274069321"
-      }
-    ],
-    "PublicationDate": "2013-10-26",
-    "LastRelease": "",
-    "Service": {
-      "Name": "PA-API",
-      "URL": "https://affiliate.amazon.co.jp/assoc_credentials/home"
+    {
+      "Name": "市谷 聡啓",
+      "Role": "翻訳"
+    },
+    {
+      "Name": "藤原 大",
+      "Role": "翻訳"
     }
+  ],
+  "Publisher": "オーム社",
+  "Codes": [
+    {
+      "Name": "ASIN",
+      "Value": "427406932X"
+    },
+    {
+      "Name": "EAN",
+      "Value": "9784274069321"
+    }
+  ],
+  "PublicationDate": "2013-10-26",
+  "LastRelease": "",
+  "Service": {
+    "Name": "PA-API",
+    "URL": "https://affiliate.amazon.co.jp/assoc_credentials/home"
   }
+}
 ```
 
 ### Make review data
@@ -142,13 +144,16 @@ Usage:
   books-data review [flags] [description]
 
 Flags:
-  -h, --help                 help for review
-      --pipe                 Import description from Stdin
-  -r, --rating int           Rating of product
-      --review-date string   Date of review
+      --bookpage-url string   URL of book page
+  -h, --help                  help for review
+      --image-url string      URL of book cover image
+      --pipe                  Import description from Stdin
+  -r, --rating int            Rating of product
+      --review-date string    Date of review
 
 Global Flags:
       --access-key string      Config: PA-API Access Key ID
+  -c, --aozora-card string     Aozora-bunko card no.
   -a, --asin string            Amazon ASIN code
       --associate-tag string   Config: PA-API Associate Tag
       --config string          Config file (default $HOME/.books-data.yaml)
@@ -296,6 +301,7 @@ Flags:
 
 Global Flags:
       --access-key string      Config: PA-API Access Key ID
+  -c, --aozora-card string     Aozora-bunko card no.
   -a, --asin string            Amazon ASIN code
       --associate-tag string   Config: PA-API Associate Tag
       --config string          Config file (default $HOME/.books-data.yaml)
@@ -400,6 +406,7 @@ $ books-data history -a 427406932X -t testdata/review-template/template.html
 - [DDRBoxman/go-amazon-product-api: Wrapper for the Amazon Product Advertising API](https://github.com/DDRBoxman/go-amazon-product-api)
 - [seihmd/openbd: openBD API written by Go](https://github.com/seihmd/openbd)
     - [openBDのAPIライブラリをGoでつくりました - Qiita](https://qiita.com/seihmd/items/d1f8b3b54cbc93346d78)
+- [spiegel-im-spiegel/aozora-api: APIs for Aozora-bunko RESTful Service by Golang](https://github.com/spiegel-im-spiegel/aozora-api)
 
 [books-data]: https://github.com/spiegel-im-spiegel/books-data "spiegel-im-spiegel/books-data: Search for Books Data"
 [openBD]: https://openbd.jp/
