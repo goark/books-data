@@ -1,10 +1,15 @@
 package facade
 
 import (
+	"context"
+	"errors"
+	"os"
+
 	"github.com/spf13/cobra"
 	"github.com/spiegel-im-spiegel/books-data/ecode"
 	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
+	"github.com/spiegel-im-spiegel/gocli/signal"
 )
 
 //newSearchCmd returns cobra.Command instance for show sub-command
@@ -20,6 +25,9 @@ func newSearchCmd(ui *rwi.RWI) *cobra.Command {
 				return errs.Wrap(err, "--raw")
 			}
 
+			//Create context
+			ctx := signal.Context(context.Background(), os.Interrupt)
+
 			var lastError error
 			//Search by ASIN code
 			if len(asin) > 0 {
@@ -34,16 +42,16 @@ func newSearchCmd(ui *rwi.RWI) *cobra.Command {
 			}
 			//Search by ISBN code
 			if len(isbn) > 0 {
-				//by PA-API
-				r, err := searchPAAPI(isbn, true, rawFlag)
+				//by openBD
+				r, err := searchOpenBD(ctx, isbn, rawFlag)
 				if err == nil {
 					return debugPrint(ui, ui.WriteFrom(r))
 				}
 				if !checkError(err) {
 					return debugPrint(ui, err)
 				}
-				//by openBD
-				r, err = searchOpenBD(isbn, rawFlag)
+				//by PA-API
+				r, err = searchPAAPI(isbn, true, rawFlag)
 				if err == nil {
 					return debugPrint(ui, ui.WriteFrom(r))
 				}
@@ -54,7 +62,7 @@ func newSearchCmd(ui *rwi.RWI) *cobra.Command {
 			}
 			if len(card) > 0 {
 				//by Aozora-API
-				r, err := searchAozoraAPI(card, rawFlag)
+				r, err := searchAozoraAPI(ctx, card, rawFlag)
 				if err == nil {
 					return debugPrint(ui, ui.WriteFrom(r))
 				}
@@ -74,13 +82,11 @@ func newSearchCmd(ui *rwi.RWI) *cobra.Command {
 
 func checkError(err error) bool {
 	switch true {
-	case errs.Is(err, ecode.ErrInvalidAPIParameter):
-	case errs.Is(err, ecode.ErrInvalidAPIResponse):
-	case errs.Is(err, ecode.ErrNoData):
+	case errors.Is(err, ecode.ErrInvalidAPIParameter), errors.Is(err, ecode.ErrInvalidAPIResponse), errors.Is(err, ecode.ErrNoData):
+		return true
 	default:
 		return false
 	}
-	return true
 }
 
 /* Copyright 2019 Spiegel

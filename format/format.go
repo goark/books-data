@@ -13,13 +13,13 @@ import (
 func ByTemplateFile(obj interface{}, tmpltPath string) (*bytes.Buffer, error) {
 	file, err := os.Open(tmpltPath)
 	if err != nil {
-		return nil, errs.Wrap(err, "error in format.ByTemplateFile() function")
+		return nil, errs.Wrap(err, "", errs.WithParam("tmpltPath", tmpltPath))
 	}
 	defer file.Close()
 
 	tmplt := &strings.Builder{}
 	if _, err := io.Copy(tmplt, file); err != nil {
-		return nil, errs.Wrap(err, "error in format.ByTemplateFile() function")
+		return nil, errs.Wrap(err, "", errs.WithParam("tmpltPath", tmpltPath))
 	}
 	return Do(obj, tmplt.String())
 }
@@ -28,11 +28,11 @@ func ByTemplateFile(obj interface{}, tmpltPath string) (*bytes.Buffer, error) {
 func Do(obj interface{}, tmplt string) (*bytes.Buffer, error) {
 	t, err := template.New("Formatting").Parse(tmplt)
 	if err != nil {
-		return nil, errs.Wrap(err, "error in format.Do() function")
+		return nil, errs.Wrap(err, "", errs.WithParam("tmplt", tmplt))
 	}
 	buf := &bytes.Buffer{}
 	if err := t.Execute(buf, obj); err != nil {
-		return buf, errs.Wrap(err, "error in format.Do() function")
+		return buf, errs.Wrap(err, "", errs.WithParam("tmplt", tmplt))
 	}
 	return buf, nil
 }

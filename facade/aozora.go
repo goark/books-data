@@ -2,14 +2,15 @@ package facade
 
 import (
 	"bytes"
+	"context"
 	"io"
 
 	"github.com/spiegel-im-spiegel/books-data/api/aozoraapi"
 	"github.com/spiegel-im-spiegel/books-data/entity"
 )
 
-func searchAozoraAPI(id string, rawFlag bool) (io.Reader, error) {
-	aozora := aozoraapi.New()
+func searchAozoraAPI(ctx context.Context, id string, rawFlag bool) (io.Reader, error) {
+	aozora := aozoraapi.New(ctx)
 	if rawFlag {
 		return aozora.LookupRawData(id)
 	}
@@ -24,8 +25,8 @@ func searchAozoraAPI(id string, rawFlag bool) (io.Reader, error) {
 	return bytes.NewReader(b), nil
 }
 
-func findAozoraAPI(id string) (*entity.Book, error) {
-	return aozoraapi.New().LookupBook(id)
+func findAozoraAPI(ctx context.Context, id string) (*entity.Book, error) {
+	return aozoraapi.New(ctx).LookupBook(id)
 }
 
 /* Copyright 2019 Spiegel

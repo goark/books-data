@@ -15,19 +15,19 @@ import (
 func CreatePAAPI(isbnFlag bool) (api.API, error) {
 	marketplace := viper.GetString("marketplace")
 	if len(marketplace) == 0 {
-		return nil, errs.Wrapf(ecode.ErrInvalidAPIParameter, "marketplace is empty")
+		return nil, errs.Wrap(ecode.ErrInvalidAPIParameter, "marketplace is empty")
 	}
 	associateTag := viper.GetString("associate-tag")
 	if len(associateTag) == 0 {
-		return nil, errs.Wrapf(ecode.ErrInvalidAPIParameter, "associate-tag is empty")
+		return nil, errs.Wrap(ecode.ErrInvalidAPIParameter, "associate-tag is empty")
 	}
 	accessKey := viper.GetString("access-key")
 	if len(accessKey) == 0 {
-		return nil, errs.Wrapf(ecode.ErrInvalidAPIParameter, "access-key is empty")
+		return nil, errs.Wrap(ecode.ErrInvalidAPIParameter, "access-key is empty")
 	}
 	secretKey := viper.GetString("secret-key")
 	if len(secretKey) == 0 {
-		return nil, errs.Wrapf(ecode.ErrInvalidAPIParameter, "secret-key is empty")
+		return nil, errs.Wrap(ecode.ErrInvalidAPIParameter, "secret-key is empty")
 	}
 	return pa.New(
 		pa.WithMarketplace(marketplace),
