@@ -2,37 +2,46 @@ package openbd
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
+	"fmt"
 	"io"
+	"net/http"
 
-	obd "github.com/seihmd/openbd"
 	"github.com/spiegel-im-spiegel/books-data/api"
 	"github.com/spiegel-im-spiegel/books-data/ecode"
 	"github.com/spiegel-im-spiegel/books-data/entity"
 	"github.com/spiegel-im-spiegel/books-data/entity/values"
 	"github.com/spiegel-im-spiegel/errs"
+	obd "github.com/spiegel-im-spiegel/openbd-api"
 )
 
 //OpenBD is a api.API class for openBD API
 type OpenBD struct {
-	server *Server //server info.
+	svcType api.ServiceType //Service Type
+	server  *obd.Server     //server info.
+	ctx     context.Context //context
 }
 
 //New returns OpenBD instance
-func New(cmd CommandType) api.API {
-	return &OpenBD{server: &Server{svcType: api.TypeOpenBD, cmd: cmd}}
+func New(ctx context.Context) api.API {
+	return &OpenBD{svcType: api.TypeOpenBD, server: obd.New(), ctx: ctx}
 }
 
 //Name returns name of API
 func (a *OpenBD) Name() string {
-	return a.server.svcType.String()
+	return a.svcType.String()
 }
 
 ///LookupRawData returns openBD raw data
 func (a *OpenBD) LookupRawData(id string) (io.Reader, error) {
-	res, err := a.server.CreateClient().LookupJSON(id)
+	res, err := a.server.CreateClient(a.ctx, &http.Client{}).LookupBooksRaw([]string{id})
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrap(
+			err,
+			fmt.Sprintf("invalid book id: %v", id),
+			errs.WithParam("id", id),
+		)
 	}
 	return bytes.NewReader(res), nil
 }
@@ -41,34 +50,31 @@ func (a *OpenBD) LookupRawData(id string) (io.Reader, error) {
 func (a *OpenBD) LookupBook(id string) (*entity.Book, error) {
 	data, err := a.LookupRawData(id)
 	if err != nil {
-		return nil, errs.Wrap(err, "error in OpenBD.LookupBook() function")
+		return nil, errs.Wrap(err, "")
 	}
 	bd, err := unmarshalJSON(data)
 	if err != nil {
-		return nil, errs.Wrap(err, "error in OpenBD.LookupBook() function")
+		return nil, errs.Wrap(err, "")
 	}
-	if !bd.IsValidData() {
-		return nil, errs.Wrap(ecode.ErrInvalidAPIResponse, "error in OpenBD.LookupBook() function")
+	if !bd.Valid() {
+		return nil, errs.Wrap(ecode.ErrInvalidAPIResponse, "")
 	}
 
 	book := &entity.Book{
 		Type:        a.Name(),
-		ID:          bd.GetISBN(),
-		Title:       bd.GetTitle(),
-		SeriesTitle: bd.GetSeries(),
+		ID:          bd.Id(),
+		Title:       bd.Title(),
+		SeriesTitle: bd.SeriesTitle(),
 		Image: entity.BookCover{
-			URL: bd.GetImageLink(),
+			URL: bd.ImageURL(),
 		},
-		ProductType: "Book",
-		Codes:       []entity.Code{entity.Code{Name: "ISBN", Value: bd.GetISBN()}},
-		Authors:     []string{bd.GetAuthor()},
-		Publisher:   bd.GetPublisher(),
-		Service:     entity.Service{Name: "openBD", URL: "https://openbd.jp/"},
+		ProductType:     "Book",
+		Codes:           []entity.Code{entity.Code{Name: "ISBN", Value: bd.ISBN()}},
+		Authors:         bd.Authors(),
+		Publisher:       bd.Publisher(),
+		PublicationDate: values.NewDate(bd.PublicationDate().Time),
+		Service:         entity.Service{Name: "openBD", URL: "https://openbd.jp/"},
 	}
-	if tm, err := bd.GetPubdate(); err == nil {
-		book.PublicationDate = values.NewDate(tm)
-	}
-
 	return book, nil
 }
 
@@ -76,10 +82,10 @@ func (a *OpenBD) LookupBook(id string) (*entity.Book, error) {
 func unmarshalJSON(jsondata io.Reader) (*obd.Book, error) {
 	books := []obd.Book{}
 	if err := json.NewDecoder(jsondata).Decode(&books); err != nil {
-		return nil, errs.Wrap(err, "error in OpenBD.unmarshalJSON() function")
+		return nil, errs.Wrap(err, "")
 	}
 	if len(books) == 0 {
-		return nil, errs.Wrap(ecode.ErrNoData, "error in OpenBD.unmarshalJSON() function")
+		return nil, errs.Wrap(ecode.ErrNoData, "")
 	}
 	return &books[0], nil
 }
