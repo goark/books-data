@@ -2,6 +2,7 @@ package aozoraapi
 
 import (
 	"bytes"
+	"context"
 	"fmt"
 	"io"
 	"net/http"
@@ -18,11 +19,12 @@ import (
 type AozoraAPI struct {
 	svcType api.ServiceType //Service Type
 	server  *aozora.Server  //server info.
+	ctx     context.Context //context
 }
 
 //New returns OpenBD instance
-func New() api.API {
-	return &AozoraAPI{svcType: api.TypeAozoraAPI, server: aozora.New()}
+func New(ctx context.Context) api.API {
+	return &AozoraAPI{svcType: api.TypeAozoraAPI, server: aozora.New(), ctx: ctx}
 }
 
 //Name returns name of API
@@ -34,11 +36,15 @@ func (a *AozoraAPI) Name() string {
 func (a *AozoraAPI) LookupRawData(id string) (io.Reader, error) {
 	bookId, err := strconv.Atoi(id)
 	if err != nil {
-		return nil, errs.Wrapf(err, "invalid book id: %v", id)
+		return nil, errs.Wrap(
+			err,
+			fmt.Sprintf("invalid book id: %v", id),
+			errs.WithParam("id", id),
+		)
 	}
-	b, err := a.server.CreateClient(&http.Client{}).LookupBookRaw(bookId)
+	b, err := a.server.CreateClient(a.ctx, &http.Client{}).LookupBookRaw(bookId)
 	if err != nil {
-		return nil, errs.Wrap(err, "error in AozoraAPI.LookupRawData() function")
+		return nil, errs.Wrap(err, "")
 	}
 	return bytes.NewReader(b), nil
 }
@@ -47,11 +53,15 @@ func (a *AozoraAPI) LookupRawData(id string) (io.Reader, error) {
 func (a *AozoraAPI) LookupBook(id string) (*entity.Book, error) {
 	bookId, err := strconv.Atoi(id)
 	if err != nil {
-		return nil, errs.Wrapf(err, "invalid book id: %v", id)
+		return nil, errs.Wrap(
+			err,
+			fmt.Sprintf("invalid book id: %v", id),
+			errs.WithParam("id", id),
+		)
 	}
-	bk, err := a.server.CreateClient(&http.Client{}).LookupBook(bookId)
+	bk, err := a.server.CreateClient(nil, &http.Client{}).LookupBook(bookId)
 	if err != nil {
-		return nil, errs.Wrap(err, "error in AozoraAPI.LookupBook() function")
+		return nil, errs.Wrap(err, "")
 	}
 
 	book := &entity.Book{

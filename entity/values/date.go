@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"strings"
 	"time"
+
+	"github.com/spiegel-im-spiegel/errs"
 )
 
 //Time is wrapper class of time.Time
@@ -39,7 +41,7 @@ func (t *Date) UnmarshalJSON(b []byte) error {
 			*t = Date{tm}
 			return nil
 		}
-		return err
+		return errs.Wrap(err, "")
 	}
 	tm, err := time.Parse("20060102", s)
 	if err == nil {
@@ -51,7 +53,7 @@ func (t *Date) UnmarshalJSON(b []byte) error {
 		*t = Date{tm}
 		return nil
 	}
-	return err
+	return errs.Wrap(err, "")
 }
 
 //MarshalJSON returns time string with RFC3339 format

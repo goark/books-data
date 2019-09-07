@@ -1,6 +1,7 @@
 package facade
 
 import (
+	"context"
 	"io"
 	"os"
 	"strings"
@@ -13,6 +14,7 @@ import (
 	"github.com/spiegel-im-spiegel/books-data/review/logger"
 	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
+	"github.com/spiegel-im-spiegel/gocli/signal"
 )
 
 //newSearchCmd returns cobra.Command instance for show sub-command
@@ -61,6 +63,9 @@ func newReviewCmd(ui *rwi.RWI) *cobra.Command {
 				desc = args[0]
 			}
 
+			//Create context
+			ctx := signal.Context(context.Background(), os.Interrupt)
+
 			err = nil
 			var bk *entity.Book = nil
 			//Search by ASIN code
@@ -84,7 +89,7 @@ func newReviewCmd(ui *rwi.RWI) *cobra.Command {
 			}
 			if bk == nil && len(isbn) > 0 {
 				//by openBD
-				bk, err = findOpenBD(isbn)
+				bk, err = findOpenBD(ctx, isbn)
 				if err != nil {
 					if !checkError(err) {
 						return debugPrint(ui, err)
@@ -93,7 +98,7 @@ func newReviewCmd(ui *rwi.RWI) *cobra.Command {
 			}
 			if bk == nil && len(card) > 0 {
 				//by Aozora-API
-				bk, err = findAozoraAPI(card)
+				bk, err = findAozoraAPI(ctx, card)
 				if err != nil {
 					if !checkError(err) {
 						return debugPrint(ui, err)
@@ -142,11 +147,11 @@ func updateReviewLog(rev *review.Review) error {
 	}
 	revs, err := logger.ImportJSONFile(path)
 	if err != nil {
-		return errs.Wrap(err, "error in facade.updateReviewLog() function")
+		return errs.Wrap(err, "")
 	}
 	revs = revs.Append(rev)
 	if err := revs.ExportJSONFile(path); err != nil {
-		return errs.Wrap(err, "error in facade.updateReviewLog() function")
+		return errs.Wrap(err, "")
 	}
 	return nil
 }

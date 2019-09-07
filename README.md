@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/spiegel-im-spiegel/books-data.svg?branch=master)](https://travis-ci.org/spiegel-im-spiegel/books-data)
 [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/spiegel-im-spiegel/books-data/master/LICENSE)
-[![GitHub release](http://img.shields.io/github/release/spiegel-im-spiegel/books-data.svg)](https://github.com/spiegel-im-spiegel/books-data/releases/latest)
+[![GitHub release](https://img.shields.io/github/release/spiegel-im-spiegel/books-data.svg)](https://github.com/spiegel-im-spiegel/books-data/releases/latest)
 
 ## Download and Build
 
@@ -36,7 +36,7 @@ Flags:
   -c, --aozora-card string     Aozora-bunko card no.
   -a, --asin string            Amazon ASIN code
       --associate-tag string   Config: PA-API Associate Tag
-      --config string          Config file (default $HOME/.books-data.yaml)
+      --config string          Config file (default /home/username/.config/books-data/config.yaml)
       --debug                  for debug
   -h, --help                   help for books-data
   -i, --isbn string            ISBN code
@@ -51,7 +51,7 @@ Use "books-data [command] --help" for more information about a command.
 ### Config file
 
 ```text
-$ cat ~/.books-data.yaml
+$ cat ~/.config/books-data/config.yaml
 marketplace: webservices.amazon.co.jp
 associate-tag: mytag-20
 access-key: AKIAIOSFODNN7EXAMPLE
@@ -77,7 +77,7 @@ Global Flags:
   -c, --aozora-card string     Aozora-bunko card no.
   -a, --asin string            Amazon ASIN code
       --associate-tag string   Config: PA-API Associate Tag
-      --config string          Config file (default $HOME/.books-data.yaml)
+      --config string          Config file (default /home/username/.config/books-data/config.yaml)
       --debug                  for debug
   -i, --isbn string            ISBN code
       --marketplace string     Config: PA-API Marketplace (default "webservices.amazon.co.jp")
@@ -156,7 +156,7 @@ Global Flags:
   -c, --aozora-card string     Aozora-bunko card no.
   -a, --asin string            Amazon ASIN code
       --associate-tag string   Config: PA-API Associate Tag
-      --config string          Config file (default $HOME/.books-data.yaml)
+      --config string          Config file (default /home/username/.config/books-data/config.yaml)
       --debug                  for debug
   -i, --isbn string            ISBN code
       --marketplace string     Config: PA-API Marketplace (default "webservices.amazon.co.jp")
@@ -304,7 +304,7 @@ Global Flags:
   -c, --aozora-card string     Aozora-bunko card no.
   -a, --asin string            Amazon ASIN code
       --associate-tag string   Config: PA-API Associate Tag
-      --config string          Config file (default $HOME/.books-data.yaml)
+      --config string          Config file (default /home/username/.config/books-data/config.yaml)
       --debug                  for debug
   -i, --isbn string            ISBN code
       --marketplace string     Config: PA-API Marketplace (default "webservices.amazon.co.jp")

@@ -2,13 +2,12 @@ package facade
 
 import (
 	"fmt"
-	"os"
 	"runtime"
 
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/spiegel-im-spiegel/books-data/ecode"
-	"github.com/spiegel-im-spiegel/errs"
+	"github.com/spiegel-im-spiegel/gocli/config"
 	"github.com/spiegel-im-spiegel/gocli/exitcode"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
 )
@@ -20,12 +19,14 @@ var (
 	Version = "developer version"
 )
 var (
-	debugFlag bool   //debug flag
-	cfgFile   string //config file
-	asin      string //ASIN code
-	isbn      string //ISBN code
-	card      string //Aozora-bunko card no.
-	tmpltPath string //template file path
+	debugFlag         bool   //debug flag
+	cfgFile           string //config file
+	asin              string //ASIN code
+	isbn              string //ISBN code
+	card              string //Aozora-bunko card no.
+	tmpltPath         string //template file path
+	configFile        = "config"
+	defaultConfigPath = config.Path(Name, configFile+".yaml")
 )
 
 //newRootCmd returns cobra.Command instance for root command
@@ -47,7 +48,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 	rootCmd.AddCommand(newHistroyCmd(ui))
 
 	//global options
-	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", "Config file (default $HOME/.books-data.yaml)")
+	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", fmt.Sprintf("Config file (default %v)", defaultConfigPath))
 	rootCmd.PersistentFlags().StringP("review-log", "l", "", "Config: Review log file (JSON format)")
 	rootCmd.PersistentFlags().StringP("marketplace", "", "webservices.amazon.co.jp", "Config: PA-API Marketplace")
 	rootCmd.PersistentFlags().StringP("associate-tag", "", "", "Config: PA-API Associate Tag")
@@ -78,14 +79,14 @@ func initConfig() {
 		// Use config file from the flag.
 		viper.SetConfigFile(cfgFile)
 	} else {
-		// Find home directory.
-		home, err := os.UserHomeDir()
-		if err != nil {
-			panic(err)
+		// Find config directory.
+		confDir := config.Dir(Name)
+		if len(confDir) == 0 {
+			confDir = "." //current directory
 		}
 		// Search config in home directory with name ".books-data.yaml" (without extension).
-		viper.AddConfigPath(home)
-		viper.SetConfigName(".books-data")
+		viper.AddConfigPath(confDir)
+		viper.SetConfigName(configFile)
 	}
 	viper.AutomaticEnv()     // read in environment variables that match
 	_ = viper.ReadInConfig() // If a config file is found, read it in.
@@ -93,10 +94,10 @@ func initConfig() {
 
 func debugPrint(ui *rwi.RWI, err error) error {
 	if debugFlag && err != nil {
-		fmt.Fprintf(ui.ErrorWriter(), "Error: %+v\n", err)
+		fmt.Fprintf(ui.ErrorWriter(), "%+v\n", err)
 		return nil
 	}
-	return errs.Cause(err)
+	return err
 }
 
 //Execute is called from main function

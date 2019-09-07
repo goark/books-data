@@ -2,14 +2,15 @@ package facade
 
 import (
 	"bytes"
+	"context"
 	"io"
 
 	"github.com/spiegel-im-spiegel/books-data/api/openbd"
 	"github.com/spiegel-im-spiegel/books-data/entity"
 )
 
-func searchOpenBD(id string, rawFlag bool) (io.Reader, error) {
-	obdapi := openbd.New(openbd.GET)
+func searchOpenBD(ctx context.Context, id string, rawFlag bool) (io.Reader, error) {
+	obdapi := openbd.New(ctx)
 	if rawFlag {
 		return obdapi.LookupRawData(id)
 	}
@@ -24,8 +25,8 @@ func searchOpenBD(id string, rawFlag bool) (io.Reader, error) {
 	return bytes.NewReader(b), nil
 }
 
-func findOpenBD(id string) (*entity.Book, error) {
-	return openbd.New(openbd.GET).LookupBook(id)
+func findOpenBD(ctx context.Context, id string) (*entity.Book, error) {
+	return openbd.New(ctx).LookupBook(id)
 }
 
 /* Copyright 2019 Spiegel

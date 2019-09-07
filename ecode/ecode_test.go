@@ -1,6 +1,7 @@
 package ecode
 
 import (
+	"errors"
 	"fmt"
 	"testing"
 
@@ -44,7 +45,7 @@ func TestECodeErrorEquality(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		res := errs.Is(tc.err1, tc.err2)
+		res := errors.Is(tc.err1, tc.err2)
 		if res != tc.res {
 			t.Errorf("\"%v\" == \"%v\" ? %v, want %v", tc.err1, tc.err2, res, tc.res)
 		}
@@ -85,7 +86,7 @@ func TestWrapfError(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		we := errs.Wrapf(tc.err, "%v", tc.msg)
+		we := errs.Wrap(tc.err, tc.msg)
 		if we.Error() != tc.str {
 			t.Errorf("wrapError.Error() == \"%v\", want \"%v\"", we.Error(), tc.str)
 		}
@@ -94,7 +95,7 @@ func TestWrapfError(t *testing.T) {
 }
 
 func TestWrapfNilError(t *testing.T) {
-	if we := errs.Wrapf(nil, "%v", "null error"); we != nil {
+	if we := errs.Wrap(nil, "null error"); we != nil {
 		t.Errorf("Wrapf(nil) == \"%v\", want nil.", we)
 	}
 }
@@ -112,7 +113,7 @@ func TestWrapErrorEquality(t *testing.T) {
 	}
 
 	for _, tc := range testCases {
-		res := errs.Is(tc.err1, tc.err2)
+		res := errors.Is(tc.err1, tc.err2)
 		if res != tc.res {
 			t.Errorf("\"%v\" == \"%v\" ? %v, want %v", tc.err1, tc.err2, res, tc.res)
 		}

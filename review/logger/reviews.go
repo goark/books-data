@@ -21,7 +21,8 @@ func ImportJSONFile(path string) (Reviews, error) {
 	}
 	defer file.Close()
 
-	return ImportJSON(file)
+	rv, err := ImportJSON(file)
+	return rv, errs.Wrap(err, "", errs.WithParam("path", path))
 }
 
 //ImportJSONFile import Reviews data with JSON format
@@ -29,7 +30,7 @@ func ImportJSON(r io.Reader) (Reviews, error) {
 	dec := json.NewDecoder(r)
 	revs := Reviews{}
 	err := dec.Decode(&revs)
-	return revs, errs.Wrap(err, "error in logger.ImportJSON() function")
+	return revs, errs.Wrap(err, "")
 }
 
 //exportJSON returns byte string with JSON format
@@ -38,14 +39,14 @@ func (revs Reviews) exportJSON() (*bytes.Buffer, error) {
 	enc := json.NewEncoder(buf)
 	enc.SetIndent("", "  ")
 	err := enc.Encode(revs)
-	return buf, errs.Wrap(err, "error in logger.ReviewLog.exportJSON() function")
+	return buf, errs.Wrap(err, "")
 }
 
 //ExportJSONFile outputs file with JSON format
 func (revs Reviews) ExportJSONFile(path string) error {
 	file, err := os.Create(path)
 	if err != nil {
-		return errs.Wrap(err, "error in logger.ReviewLog.ExportJSONFile() function")
+		return errs.Wrap(err, "", errs.WithParam("path", path))
 	}
 	defer file.Close()
 
@@ -54,7 +55,7 @@ func (revs Reviews) ExportJSONFile(path string) error {
 		return err
 	}
 	_, err = io.Copy(file, b)
-	return errs.Wrap(err, "error in logger.ReviewLog.ExportJSONFile() function")
+	return errs.Wrap(err, "", errs.WithParam("path", path))
 }
 
 func (revs Reviews) String() string {
