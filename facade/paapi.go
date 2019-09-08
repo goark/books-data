@@ -12,7 +12,15 @@ import (
 	"github.com/spiegel-im-spiegel/errs"
 )
 
-func CreatePAAPI(isbnFlag bool) (api.API, error) {
+//paapiParams is parameters for PA-API
+type paapiParams struct {
+	marketplace  string
+	associateTag string
+	accessKey    string
+	secretKey    string
+}
+
+func getPaapiParams() (*paapiParams, error) {
 	marketplace := viper.GetString("marketplace")
 	if len(marketplace) == 0 {
 		return nil, errs.Wrap(ecode.ErrInvalidAPIParameter, "marketplace is empty")
@@ -29,40 +37,36 @@ func CreatePAAPI(isbnFlag bool) (api.API, error) {
 	if len(secretKey) == 0 {
 		return nil, errs.Wrap(ecode.ErrInvalidAPIParameter, "secret-key is empty")
 	}
-	return pa.New(
-		pa.WithMarketplace(marketplace),
-		pa.WithAssociateTag(associateTag),
-		pa.WithAccessKey(accessKey),
-		pa.WithSecretKey(secretKey),
-		pa.WithEnableISBN(isbnFlag),
-	), nil
+	return &paapiParams{marketplace: marketplace, associateTag: associateTag, accessKey: accessKey, secretKey: secretKey}, nil
 }
 
-func searchPAAPI(id string, isbnFlag, rawFlag bool) (io.Reader, error) {
-	paapi, err := CreatePAAPI(isbnFlag)
-	if err != nil {
-		return nil, err
-	}
+func createPAAPI(p *paapiParams, isbnFlag bool) api.API {
+	return pa.New(
+		pa.WithMarketplace(p.marketplace),
+		pa.WithAssociateTag(p.associateTag),
+		pa.WithAccessKey(p.accessKey),
+		pa.WithSecretKey(p.secretKey),
+		pa.WithEnableISBN(isbnFlag),
+	)
+}
+
+func searchPAAPI(id string, p *paapiParams, isbnFlag, rawFlag bool) (io.Reader, error) {
 	if rawFlag {
-		return paapi.LookupRawData(id)
+		return createPAAPI(p, isbnFlag).LookupRawData(id)
 	}
-	book, err := paapi.LookupBook(id)
+	book, err := createPAAPI(p, isbnFlag).LookupBook(id)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
 	}
 	b, err := book.Format(tmpltPath)
 	if err != nil {
-		return nil, err
+		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
 	}
 	return bytes.NewReader(b), nil
 }
 
-func findPAAPI(id string, isbnFlag bool) (*entity.Book, error) {
-	paapi, err := CreatePAAPI(isbnFlag)
-	if err != nil {
-		return nil, err
-	}
-	return paapi.LookupBook(id)
+func findPAAPI(id string, p *paapiParams, isbnFlag bool) (*entity.Book, error) {
+	return createPAAPI(p, isbnFlag).LookupBook(id)
 }
 
 /* Copyright 2019 Spiegel

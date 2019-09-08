@@ -50,14 +50,14 @@ func (a *OpenBD) LookupRawData(id string) (io.Reader, error) {
 func (a *OpenBD) LookupBook(id string) (*entity.Book, error) {
 	data, err := a.LookupRawData(id)
 	if err != nil {
-		return nil, errs.Wrap(err, "")
+		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
 	}
 	bd, err := unmarshalJSON(data)
 	if err != nil {
-		return nil, errs.Wrap(err, "")
+		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
 	}
-	if !bd.Valid() {
-		return nil, errs.Wrap(ecode.ErrInvalidAPIResponse, "")
+	if !bd.IsValid() {
+		return nil, errs.Wrap(ecode.ErrInvalidAPIResponse, "", errs.WithParam("id", id))
 	}
 
 	book := &entity.Book{
