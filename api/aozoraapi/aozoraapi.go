@@ -44,7 +44,7 @@ func (a *AozoraAPI) LookupRawData(id string) (io.Reader, error) {
 	}
 	b, err := a.server.CreateClient(a.ctx, &http.Client{}).LookupBookRaw(bookId)
 	if err != nil {
-		return nil, errs.Wrap(err, "")
+		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
 	}
 	return bytes.NewReader(b), nil
 }
@@ -61,7 +61,7 @@ func (a *AozoraAPI) LookupBook(id string) (*entity.Book, error) {
 	}
 	bk, err := a.server.CreateClient(nil, &http.Client{}).LookupBook(bookId)
 	if err != nil {
-		return nil, errs.Wrap(err, "")
+		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
 	}
 
 	book := &entity.Book{

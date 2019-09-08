@@ -31,7 +31,11 @@ func newSearchCmd(ui *rwi.RWI) *cobra.Command {
 			var lastError error
 			//Search by ASIN code
 			if len(asin) > 0 {
-				r, err := searchPAAPI(asin, false, rawFlag)
+				p, err := getPaapiParams()
+				if err != nil {
+					return debugPrint(ui, err)
+				}
+				r, err := searchPAAPI(asin, p, false, rawFlag)
 				if err == nil {
 					return debugPrint(ui, ui.WriteFrom(r))
 				}
@@ -50,15 +54,18 @@ func newSearchCmd(ui *rwi.RWI) *cobra.Command {
 				if !checkError(err) {
 					return debugPrint(ui, err)
 				}
-				//by PA-API
-				r, err = searchPAAPI(isbn, true, rawFlag)
-				if err == nil {
-					return debugPrint(ui, ui.WriteFrom(r))
-				}
-				if !checkError(err) {
-					return debugPrint(ui, err)
-				}
 				lastError = err
+				//by PA-API
+				if p, err := getPaapiParams(); err == nil {
+					r, err = searchPAAPI(isbn, p, true, rawFlag)
+					if err == nil {
+						return debugPrint(ui, ui.WriteFrom(r))
+					}
+					if !checkError(err) {
+						return debugPrint(ui, err)
+					}
+					lastError = err
+				}
 			}
 			if len(card) > 0 {
 				//by Aozora-API

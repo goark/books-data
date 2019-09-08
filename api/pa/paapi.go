@@ -83,24 +83,25 @@ func (a *PaAPI) Name() string {
 
 ///LookupRawData returns PA-API raw data
 func (a *PaAPI) LookupRawData(id string) (io.Reader, error) {
-	return a.server.CreateClient().LookupXML(id)
+	r, err := a.server.CreateClient().LookupXML(id)
+	return r, errs.Wrap(err, "", errs.WithParam("id", id))
 }
 
 ///LookupBook returns Book data from PA-API
 func (a *PaAPI) LookupBook(id string) (*entity.Book, error) {
 	data, err := a.LookupRawData(id)
 	if err != nil {
-		return nil, errs.Wrap(err, "error in PaAPI.LookupBook() function")
+		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
 	}
 	res, err := unmarshalXML(data)
 	if err != nil {
-		return nil, errs.Wrap(err, "error in PaAPI.LookupBook() function")
+		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
 	}
 	if !res.Items.Request.IsValid {
-		return nil, errs.Wrap(ecode.ErrInvalidAPIResponse, "error in PaAPI.LookupBook() function")
+		return nil, errs.Wrap(ecode.ErrInvalidAPIResponse, "", errs.WithParam("id", id))
 	}
 	if len(res.Items.Item) == 0 {
-		return nil, errs.Wrap(ecode.ErrNoData, "error in PaAPI.LookupBook() function")
+		return nil, errs.Wrap(ecode.ErrNoData, "", errs.WithParam("id", id))
 	}
 	item := res.Items.Item[0]
 	book := &entity.Book{
@@ -148,7 +149,7 @@ func (a *PaAPI) LookupBook(id string) (*entity.Book, error) {
 func unmarshalXML(xmldata io.Reader) (*amazonproduct.ItemLookupResponse, error) {
 	res := &amazonproduct.ItemLookupResponse{}
 	if err := xml.NewDecoder(xmldata).Decode(res); err != nil {
-		return nil, errs.Wrap(err, "error in unmarshalXML() function")
+		return nil, errs.Wrap(err, "")
 	}
 	return res, nil
 }

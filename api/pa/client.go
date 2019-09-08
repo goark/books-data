@@ -28,7 +28,7 @@ func (c *Client) LookupXML(id string) (io.Reader, error) {
 	}
 	xml, err := c.paapi.ItemLookupWithParams(params)
 	if err != nil {
-		return nil, errs.Wrap(err, "error in Client.LookupXML() function")
+		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
 	}
 	return bytes.NewBufferString(xml), nil
 }

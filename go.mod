@@ -9,5 +9,5 @@ require (
 	github.com/spiegel-im-spiegel/aozora-api v0.1.2
 	github.com/spiegel-im-spiegel/errs v0.2.1
 	github.com/spiegel-im-spiegel/gocli v0.10.1
-	github.com/spiegel-im-spiegel/openbd-api v0.1.0
+	github.com/spiegel-im-spiegel/openbd-api v0.1.1
 )

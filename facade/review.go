@@ -70,17 +70,11 @@ func newReviewCmd(ui *rwi.RWI) *cobra.Command {
 			var bk *entity.Book = nil
 			//Search by ASIN code
 			if len(asin) > 0 {
-				bk, err = findPAAPI(asin, false)
+				p, err := getPaapiParams()
 				if err != nil {
-					if !checkError(err) {
-						return debugPrint(ui, err)
-					}
+					return debugPrint(ui, err)
 				}
-			}
-			//Search by ISBN code
-			if bk == nil && len(isbn) > 0 {
-				//by PA-API
-				bk, err = findPAAPI(isbn, true)
+				bk, err = findPAAPI(asin, p, false)
 				if err != nil {
 					if !checkError(err) {
 						return debugPrint(ui, err)
@@ -93,6 +87,18 @@ func newReviewCmd(ui *rwi.RWI) *cobra.Command {
 				if err != nil {
 					if !checkError(err) {
 						return debugPrint(ui, err)
+					}
+				}
+			}
+			//Search by ISBN code
+			if bk == nil && len(isbn) > 0 {
+				//by PA-API
+				if p, errPA := getPaapiParams(); errPA == nil {
+					bk, err = findPAAPI(isbn, p, true)
+					if err != nil {
+						if !checkError(err) {
+							return debugPrint(ui, err)
+						}
 					}
 				}
 			}
