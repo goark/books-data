@@ -112,7 +112,7 @@ func (r *Review) Format(tmpltPath string) ([]byte, error) {
 	}
 	buf, err := format.ByTemplateFile(r, tmpltPath)
 	if err != nil {
-		return buf.Bytes(), errs.Wrap(err, "", errs.WithParam("tmpltPath", tmpltPath))
+		return nil, errs.Wrap(err, "", errs.WithParam("tmpltPath", tmpltPath))
 	}
 	return buf.Bytes(), nil
 }
