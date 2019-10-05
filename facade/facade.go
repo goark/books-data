@@ -50,7 +50,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 	//global options
 	rootCmd.PersistentFlags().StringVar(&cfgFile, "config", "", fmt.Sprintf("Config file (default %v)", defaultConfigPath))
 	rootCmd.PersistentFlags().StringP("review-log", "l", "", "Config: Review log file (JSON format)")
-	rootCmd.PersistentFlags().StringP("marketplace", "", "webservices.amazon.co.jp", "Config: PA-API Marketplace")
+	rootCmd.PersistentFlags().StringP("marketplace", "", "www.amazon.co.jp", "Config: PA-API Marketplace")
 	rootCmd.PersistentFlags().StringP("associate-tag", "", "", "Config: PA-API Associate Tag")
 	rootCmd.PersistentFlags().StringP("access-key", "", "", "Config: PA-API Access Key ID")
 	rootCmd.PersistentFlags().StringP("secret-key", "", "", "Config: PA-API Secret Access Key")

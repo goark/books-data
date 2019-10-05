@@ -40,7 +40,7 @@ Flags:
       --debug                  for debug
   -h, --help                   help for books-data
   -i, --isbn string            ISBN code
-      --marketplace string     Config: PA-API Marketplace (default "webservices.amazon.co.jp")
+      --marketplace string     Config: PA-API Marketplace (default "www.amazon.co.jp")
   -l, --review-log string      Config: Review log file (JSON format)
       --secret-key string      Config: PA-API Secret Access Key
   -t, --template-file string   Template file for formatted output
@@ -80,7 +80,7 @@ Global Flags:
       --config string          Config file (default /home/username/.config/books-data/config.yaml)
       --debug                  for debug
   -i, --isbn string            ISBN code
-      --marketplace string     Config: PA-API Marketplace (default "webservices.amazon.co.jp")
+      --marketplace string     Config: PA-API Marketplace (default "www.amazon.co.jp")
   -l, --review-log string      Config: Review log file (JSON format)
       --secret-key string      Config: PA-API Secret Access Key
   -t, --template-file string   Template file for formatted output
@@ -164,7 +164,7 @@ Global Flags:
       --config string          Config file (default /home/username/.config/books-data/config.yaml)
       --debug                  for debug
   -i, --isbn string            ISBN code
-      --marketplace string     Config: PA-API Marketplace (default "webservices.amazon.co.jp")
+      --marketplace string     Config: PA-API Marketplace (default "www.amazon.co.jp")
   -l, --review-log string      Config: Review log file (JSON format)
       --secret-key string      Config: PA-API Secret Access Key
   -t, --template-file string   Template file for formatted output
@@ -310,7 +310,7 @@ Global Flags:
       --config string          Config file (default /home/username/.config/books-data/config.yaml)
       --debug                  for debug
   -i, --isbn string            ISBN code
-      --marketplace string     Config: PA-API Marketplace (default "webservices.amazon.co.jp")
+      --marketplace string     Config: PA-API Marketplace (default "www.amazon.co.jp")
   -l, --review-log string      Config: Review log file (JSON format)
       --secret-key string      Config: PA-API Secret Access Key
   -t, --template-file string   Template file for formatted output
