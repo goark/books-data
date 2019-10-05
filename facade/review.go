@@ -74,7 +74,7 @@ func newReviewCmd(ui *rwi.RWI) *cobra.Command {
 				if err != nil {
 					return debugPrint(ui, err)
 				}
-				bk, err = findPAAPI(asin, p, false)
+				bk, err = findPAAPI(ctx, asin, p)
 				if err != nil {
 					if !checkError(err) {
 						return debugPrint(ui, err)
@@ -87,18 +87,6 @@ func newReviewCmd(ui *rwi.RWI) *cobra.Command {
 				if err != nil {
 					if !checkError(err) {
 						return debugPrint(ui, err)
-					}
-				}
-			}
-			//Search by ISBN code
-			if bk == nil && len(isbn) > 0 {
-				//by PA-API
-				if p, errPA := getPaapiParams(); errPA == nil {
-					bk, err = findPAAPI(isbn, p, true)
-					if err != nil {
-						if !checkError(err) {
-							return debugPrint(ui, err)
-						}
 					}
 				}
 			}

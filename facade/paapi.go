@@ -2,6 +2,7 @@ package facade
 
 import (
 	"bytes"
+	"context"
 	"io"
 
 	"github.com/spf13/viper"
@@ -40,21 +41,21 @@ func getPaapiParams() (*paapiParams, error) {
 	return &paapiParams{marketplace: marketplace, associateTag: associateTag, accessKey: accessKey, secretKey: secretKey}, nil
 }
 
-func createPAAPI(p *paapiParams, isbnFlag bool) api.API {
+func createPAAPI(ctx context.Context, p *paapiParams) api.API {
 	return pa.New(
-		pa.WithMarketplace(p.marketplace),
-		pa.WithAssociateTag(p.associateTag),
-		pa.WithAccessKey(p.accessKey),
-		pa.WithSecretKey(p.secretKey),
-		pa.WithEnableISBN(isbnFlag),
+		ctx,
+		p.marketplace,
+		p.associateTag,
+		p.accessKey,
+		p.secretKey,
 	)
 }
 
-func searchPAAPI(id string, p *paapiParams, isbnFlag, rawFlag bool) (io.Reader, error) {
+func searchPAAPI(ctx context.Context, id string, p *paapiParams, rawFlag bool) (io.Reader, error) {
 	if rawFlag {
-		return createPAAPI(p, isbnFlag).LookupRawData(id)
+		return createPAAPI(ctx, p).LookupRawData(id)
 	}
-	book, err := createPAAPI(p, isbnFlag).LookupBook(id)
+	book, err := createPAAPI(ctx, p).LookupBook(id)
 	if err != nil {
 		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
 	}
@@ -65,8 +66,8 @@ func searchPAAPI(id string, p *paapiParams, isbnFlag, rawFlag bool) (io.Reader, 
 	return bytes.NewReader(b), nil
 }
 
-func findPAAPI(id string, p *paapiParams, isbnFlag bool) (*entity.Book, error) {
-	return createPAAPI(p, isbnFlag).LookupBook(id)
+func findPAAPI(ctx context.Context, id string, p *paapiParams) (*entity.Book, error) {
+	return createPAAPI(ctx, p).LookupBook(id)
 }
 
 /* Copyright 2019 Spiegel

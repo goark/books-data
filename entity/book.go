@@ -60,8 +60,7 @@ type Book struct {
 	OriginalTitle   string `json:",omitempty"`
 	URL             string `json:",omitempty"`
 	Image           BookCover
-	ProductType     string `json:",omitempty"`
-	Authors         []string
+	ProductType     string    `json:",omitempty"`
 	Creators        []Creator `json:",omitempty"`
 	Publisher       string    `json:",omitempty"`
 	Codes           []Code

@@ -22,8 +22,10 @@ type AozoraAPI struct {
 	ctx     context.Context //context
 }
 
+var _ api.API = (*AozoraAPI)(nil) //AozoraAPI is compatible with api.API interface
+
 //New returns OpenBD instance
-func New(ctx context.Context) api.API {
+func New(ctx context.Context) *AozoraAPI {
 	return &AozoraAPI{svcType: api.TypeAozoraAPI, server: aozora.New(), ctx: ctx}
 }
 
@@ -73,8 +75,7 @@ func (a *AozoraAPI) LookupBook(id string) (*entity.Book, error) {
 		URL:             bk.CardURL,
 		ProductType:     "青空文庫",
 		Codes:           []entity.Code{entity.Code{Name: "図書カードNo.", Value: strconv.Itoa(bk.BookID)}},
-		Authors:         getAuthors(bk),
-		Creators:        getTranslators(bk),
+		Creators:        getCreators(bk),
 		PublicationDate: values.NewDate(bk.ReleaseDate.Time),
 		LastRelease:     values.NewDate(bk.LastModified.Time),
 		PublicDomain:    !bk.Copyright,
@@ -85,26 +86,22 @@ func (a *AozoraAPI) LookupBook(id string) (*entity.Book, error) {
 	return book, nil
 }
 
-func getAuthors(bk *aozora.Book) []string {
-	authors := []string{}
-	if bk == nil || len(bk.Authors) == 0 {
-		return authors
+func getCreators(bk *aozora.Book) []entity.Creator {
+	creators := []entity.Creator{}
+	if bk == nil {
+		return creators
 	}
-	for _, a := range bk.Authors {
-		authors = append(authors, fmt.Sprintf("%v %v", a.LastName, a.FirstName))
+	if len(bk.Authors) > 0 {
+		for _, a := range bk.Authors {
+			creators = append(creators, entity.Creator{Name: fmt.Sprintf("%v %v", a.LastName, a.FirstName)})
+		}
 	}
-	return authors
-}
-
-func getTranslators(bk *aozora.Book) []entity.Creator {
-	translators := []entity.Creator{}
-	if bk == nil || len(bk.Translators) == 0 {
-		return translators
+	if len(bk.Translators) > 0 {
+		for _, t := range bk.Translators {
+			creators = append(creators, entity.Creator{Name: fmt.Sprintf("%v %v", t.LastName, t.FirstName), Role: "翻訳"})
+		}
 	}
-	for _, t := range bk.Translators {
-		translators = append(translators, entity.Creator{Name: fmt.Sprintf("%v %v", t.LastName, t.FirstName), Role: "翻訳"})
-	}
-	return translators
+	return creators
 }
 
 /* Copyright 2019 Spiegel

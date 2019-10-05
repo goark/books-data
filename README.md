@@ -52,7 +52,7 @@ Use "books-data [command] --help" for more information about a command.
 
 ```text
 $ cat ~/.config/books-data/config.yaml
-marketplace: webservices.amazon.co.jp
+marketplace: www.amazon.co.jp
 associate-tag: mytag-20
 access-key: AKIAIOSFODNN7EXAMPLE
 secret-key: 1234567890
@@ -90,17 +90,18 @@ $ books-data search -a 427406932X | jq .
   "Type": "paapi",
   "ID": "427406932X",
   "Title": "リーン開発の現場 カンバンによる大規模プロジェクトの運営",
-  "URL": "https://www.amazon.co.jp/exec/obidos/ASIN/427406932X/baldandersinf-22/",
+  "URL": "https://www.amazon.co.jp/dp/427406932X?tag=mytag-22&linkCode=ogi&th=1&psc=1",
   "Image": {
-    "URL": "https://images-fe.ssl-images-amazon.com/images/I/51llL1uygcL._SL160_.jpg",
+    "URL": "https://m.media-amazon.com/images/I/51llL1uygcL._SL160_.jpg",
     "Height": 160,
     "Width": 116
   },
   "ProductType": "単行本（ソフトカバー）",
-  "Authors": [
-    "Henrik Kniberg"
-  ],
   "Creators": [
+    {
+      "Name": "Henrik Kniberg",
+      "Role": "著"
+    },
     {
       "Name": "角谷 信太郎",
       "Role": "翻訳"
@@ -123,12 +124,16 @@ $ books-data search -a 427406932X | jq .
     {
       "Name": "EAN",
       "Value": "9784274069321"
+    },
+    {
+      "Name": "ISBN",
+      "Value": "427406932X"
     }
   ],
   "PublicationDate": "2013-10-26",
   "LastRelease": "",
   "Service": {
-    "Name": "PA-API",
+    "Name": "PA-APIv5",
     "URL": "https://affiliate.amazon.co.jp/assoc_credentials/home"
   }
 }
@@ -167,52 +172,51 @@ Global Flags:
 $ books-data review -i 427406932X -r 5 "This book is Interesting." | jq .
 {
   "Book": {
-    "Type": "paapi",
-    "ID": "427406932X",
-    "Title": "リーン開発の現場 カンバンによる大規模プロジェクトの運営",
-    "URL": "https://www.amazon.co.jp/exec/obidos/ASIN/427406932X/baldandersinf-22/",
+    "Type": "openbd",
+    "ID": "9784274069321",
+    "Title": "リーン開発の現場 : カンバンによる大規模プロジェクトの運営",
     "Image": {
-      "URL": "https://images-fe.ssl-images-amazon.com/images/I/51llL1uygcL._SL160_.jpg",
-      "Height": 160,
-      "Width": 116
+      "URL": "https://cover.openbd.jp/9784274069321.jpg"
     },
-    "ProductType": "単行本（ソフトカバー）",
-    "Authors": [
-      "Henrik Kniberg"
-    ],
+    "ProductType": "Book",
     "Creators": [
       {
-        "Name": "角谷 信太郎",
-        "Role": "翻訳"
+        "Name": "Kniberg, Henrik"
       },
       {
-        "Name": "市谷 聡啓",
-        "Role": "翻訳"
+        "Name": "オーム社"
       },
       {
-        "Name": "藤原 大",
-        "Role": "翻訳"
+        "Name": "オーム社開発局"
+      },
+      {
+        "Name": "市谷 聡啓"
+      },
+      {
+        "Name": "藤原 大"
+      },
+      {
+        "Name": "角谷 信太郎"
+      },
+      {
+        "Name": "クニバーグ ヘンリック"
       }
     ],
     "Publisher": "オーム社",
     "Codes": [
       {
-        "Name": "ASIN",
-        "Value": "427406932X"
-      },
-      {
-        "Name": "EAN",
+        "Name": "ISBN",
         "Value": "9784274069321"
       }
     ],
-    "PublicationDate": "2013-10-26",
+    "PublicationDate": "2013-10-01",
     "LastRelease": "",
     "Service": {
-      "Name": "PA-API",
-      "URL": "https://affiliate.amazon.co.jp/assoc_credentials/home"
+      "Name": "openBD",
+      "URL": "https://openbd.jp/"
     }
   },
-  "Date": "2019-08-04",
+  "Date": "2019-10-05",
   "Rating": 5,
   "Star": [
     true,
@@ -228,52 +232,51 @@ $ cat ~/review-log.json
 [
   {
     "Book": {
-      "Type": "paapi",
-      "ID": "427406932X",
-      "Title": "リーン開発の現場 カンバンによる大規模プロジェクトの運営",
-      "URL": "https://www.amazon.co.jp/exec/obidos/ASIN/427406932X/baldandersinf-22/",
+      "Type": "openbd",
+      "ID": "9784274069321",
+      "Title": "リーン開発の現場 : カンバンによる大規模プロジェクトの運営",
       "Image": {
-        "URL": "https://images-fe.ssl-images-amazon.com/images/I/51llL1uygcL._SL160_.jpg",
-        "Height": 160,
-        "Width": 116
+        "URL": "https://cover.openbd.jp/9784274069321.jpg"
       },
-      "ProductType": "単行本（ソフトカバー）",
-      "Authors": [
-        "Henrik Kniberg"
-      ],
+      "ProductType": "Book",
       "Creators": [
         {
-          "Name": "角谷 信太郎",
-          "Role": "翻訳"
+          "Name": "Kniberg, Henrik"
         },
         {
-          "Name": "市谷 聡啓",
-          "Role": "翻訳"
+          "Name": "オーム社"
         },
         {
-          "Name": "藤原 大",
-          "Role": "翻訳"
+          "Name": "オーム社開発局"
+        },
+        {
+          "Name": "市谷 聡啓"
+        },
+        {
+          "Name": "藤原 大"
+        },
+        {
+          "Name": "角谷 信太郎"
+        },
+        {
+          "Name": "クニバーグ ヘンリック"
         }
       ],
       "Publisher": "オーム社",
       "Codes": [
         {
-          "Name": "ASIN",
-          "Value": "427406932X"
-        },
-        {
-          "Name": "EAN",
+          "Name": "ISBN",
           "Value": "9784274069321"
         }
       ],
-      "PublicationDate": "2013-10-26",
+      "PublicationDate": "2013-10-01",
       "LastRelease": "",
       "Service": {
-        "Name": "PA-API",
-        "URL": "https://affiliate.amazon.co.jp/assoc_credentials/home"
+        "Name": "openBD",
+        "URL": "https://openbd.jp/"
       }
     },
-    "Date": "2019-08-04",
+    "Date": "2019-10-05",
     "Rating": 5,
     "Star": [
       true,
@@ -312,55 +315,54 @@ Global Flags:
       --secret-key string      Config: PA-API Secret Access Key
   -t, --template-file string   Template file for formatted output
 
-$ books-data history -a 427406932X | jq .
+$ books-data history -i 9784274069321 | jq .
 {
   "Book": {
-    "Type": "paapi",
-    "ID": "427406932X",
-    "Title": "リーン開発の現場 カンバンによる大規模プロジェクトの運営",
-    "URL": "https://www.amazon.co.jp/exec/obidos/ASIN/427406932X/baldandersinf-22/",
+    "Type": "openbd",
+    "ID": "9784274069321",
+    "Title": "リーン開発の現場 : カンバンによる大規模プロジェクトの運営",
     "Image": {
-      "URL": "https://images-fe.ssl-images-amazon.com/images/I/51llL1uygcL._SL160_.jpg",
-      "Height": 160,
-      "Width": 116
+      "URL": "https://cover.openbd.jp/9784274069321.jpg"
     },
-    "ProductType": "単行本（ソフトカバー）",
-    "Authors": [
-      "Henrik Kniberg"
-    ],
+    "ProductType": "Book",
     "Creators": [
       {
-        "Name": "角谷 信太郎",
-        "Role": "翻訳"
+        "Name": "Kniberg, Henrik"
       },
       {
-        "Name": "市谷 聡啓",
-        "Role": "翻訳"
+        "Name": "オーム社"
       },
       {
-        "Name": "藤原 大",
-        "Role": "翻訳"
+        "Name": "オーム社開発局"
+      },
+      {
+        "Name": "市谷 聡啓"
+      },
+      {
+        "Name": "藤原 大"
+      },
+      {
+        "Name": "角谷 信太郎"
+      },
+      {
+        "Name": "クニバーグ ヘンリック"
       }
     ],
     "Publisher": "オーム社",
     "Codes": [
       {
-        "Name": "ASIN",
-        "Value": "427406932X"
-      },
-      {
-        "Name": "EAN",
+        "Name": "ISBN",
         "Value": "9784274069321"
       }
     ],
-    "PublicationDate": "2013-10-26",
+    "PublicationDate": "2013-10-01",
     "LastRelease": "",
     "Service": {
-      "Name": "PA-API",
-      "URL": "https://affiliate.amazon.co.jp/assoc_credentials/home"
+      "Name": "openBD",
+      "URL": "https://openbd.jp/"
     }
   },
-  "Date": "2019-08-04",
+  "Date": "2019-10-05",
   "Rating": 5,
   "Star": [
     true,
@@ -379,25 +381,24 @@ $ books-data history -a 427406932X | jq .
 $ books-data search -a 427406932X -t testdata/book-template/template.bib.txt
 @BOOK{Book:427406932X,
     TITLE = "リーン開発の現場 カンバンによる大規模プロジェクトの運営",
-    AUTHOR = "Henrik Kniberg and 角谷 信太郎 (翻訳) and 市谷 聡啓 (翻訳) and 藤原 大 (翻訳)",
+    AUTHOR = "Henrik Kniberg (著) and 角谷 信太郎 (翻訳) and 市谷 聡啓 (翻訳) and 藤原 大 (翻訳)",
     PUBLISHER = {オーム社},
     YEAR = 2013
 }
 
-$ books-data history -a 427406932X -t testdata/review-template/template.html
+$ books-data history -i 9784274069321 -t testdata/review-template/template.html
 <div class="hreview">
-  <div class="photo"><a class="item url" href="https://www.amazon.co.jp/exec/obidos/ASIN/427406932X/baldandersinf-22/"><img src="https://images-fe.ssl-images-amazon.com/images/I/51llL1uygcL._SL160_.jpg" width="116" alt="photo"></a></div>
+  <div class="photo"><img src="https://cover.openbd.jp/9784274069321.jpg" alt="photo"></div>
   <dl class="fn">
-    <dt><a href="https://www.amazon.co.jp/exec/obidos/ASIN/427406932X/baldandersinf-22/">リーン開発の現場 カンバンによる大規模プロジェクトの運営</a></dt>
-    <dd>Henrik Kniberg</dd>
-    <dd>角谷 信太郎 (翻訳), 市谷 聡啓 (翻訳), 藤原 大 (翻訳)</dd>
-    <dd>オーム社 2013-10-26</dd>
-    <dd>単行本（ソフトカバー）</dd>
-    <dd>427406932X (ASIN), 9784274069321 (EAN)</dd>
+    <dt>リーン開発の現場 : カンバンによる大規模プロジェクトの運営</dt>
+    <dd>Kniberg, Henrik, オーム社, オーム社開発局, 市谷 聡啓, 藤原 大, 角谷 信太郎, クニバーグ ヘンリック</dd>
+    <dd>オーム社 2013-10-01</dd>
+    <dd>Book</dd>
+    <dd>9784274069321 (ISBN)</dd>
     <dd>Rating<abbr class="rating fa-sm" title="5">&nbsp;<i class="fas fa-star"></i>&nbsp;<i class="fas fa-star"></i>&nbsp;<i class="fas fa-star"></i>&nbsp;<i class="fas fa-star"></i>&nbsp;<i class="fas fa-star"></i></abbr></dd>
   </dl>
   <p class="description">This book is Interesting.</p>
-  <p class="powered-by" >reviewed by <a href='#maker' class='reviewer'>Spiegel</a> on <abbr class="dtreviewed" title="2019-08-04">2019-08-04</abbr> (powered by <a href="https://affiliate.amazon.co.jp/assoc_credentials/home" >PA-API</a>)</p>
+  <p class="powered-by" >reviewed by <a href='#maker' class='reviewer'>Spiegel</a> on <abbr class="dtreviewed" title="2019-10-05">2019-10-05</abbr> (powered by <a href="https://openbd.jp/" >openBD</a>)</p>
 </div>
 ```
 

@@ -23,8 +23,10 @@ type OpenBD struct {
 	ctx     context.Context //context
 }
 
+var _ api.API = (*OpenBD)(nil) //OpenBD is compatible with api.API interface
+
 //New returns OpenBD instance
-func New(ctx context.Context) api.API {
+func New(ctx context.Context) *OpenBD {
 	return &OpenBD{svcType: api.TypeOpenBD, server: obd.New(), ctx: ctx}
 }
 
@@ -70,12 +72,24 @@ func (a *OpenBD) LookupBook(id string) (*entity.Book, error) {
 		},
 		ProductType:     "Book",
 		Codes:           []entity.Code{entity.Code{Name: "ISBN", Value: bd.ISBN()}},
-		Authors:         bd.Authors(),
+		Creators:        getCreators(bd),
 		Publisher:       bd.Publisher(),
 		PublicationDate: values.NewDate(bd.PublicationDate().Time),
 		Service:         entity.Service{Name: "openBD", URL: "https://openbd.jp/"},
 	}
 	return book, nil
+}
+
+//getCreators returns list of creators
+func getCreators(bd *obd.Book) []entity.Creator {
+	creators := []entity.Creator{}
+	if bd == nil {
+		return creators
+	}
+	for _, author := range bd.Authors() {
+		creators = append(creators, entity.Creator{Name: author})
+	}
+	return creators
 }
 
 //unmarshalJSON returns unmarshalled JSON data

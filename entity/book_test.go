@@ -67,7 +67,6 @@ var bookTestCases = []struct {
 				Width:  100,
 			},
 			ProductType: "ProductType",
-			Authors:     []string{"Author1", "Author2"},
 			Creators: []Creator{
 				Creator{Name: "Name1", Role: "Role1"},
 				Creator{Name: "Name2", Role: "Role2"},
@@ -87,7 +86,7 @@ var bookTestCases = []struct {
 				URL:  "URL",
 			},
 		},
-		str: `{"Type":"Type","ID":"ID","Title":"Title","SubTitle":"SubTitle","SeriesTitle":"SeriesTitle","URL":"URL","Image":{"URL":"url","Width":100},"ProductType":"ProductType","Authors":["Author1","Author2"],"Creators":[{"Name":"Name1","Role":"Role1"},{"Name":"Name2","Role":"Role2"}],"Publisher":"Publisher","Codes":[{"Name":"Name1","Value":"Value1"},{"Name":"Name2","Value":"Value2"}],"PublicationDate":"","LastRelease":"","Service":{"Name":"Name","URL":"URL"}}`,
+		str: `{"Type":"Type","ID":"ID","Title":"Title","SubTitle":"SubTitle","SeriesTitle":"SeriesTitle","URL":"URL","Image":{"URL":"url","Width":100},"ProductType":"ProductType","Creators":[{"Name":"Name1","Role":"Role1"},{"Name":"Name2","Role":"Role2"}],"Publisher":"Publisher","Codes":[{"Name":"Name1","Value":"Value1"},{"Name":"Name2","Value":"Value2"}],"PublicationDate":"","LastRelease":"","Service":{"Name":"Name","URL":"URL"}}`,
 	},
 }
 
@@ -112,10 +111,10 @@ func TestBookCopyFrom(t *testing.T) {
 	}
 }
 
-var testBookData = `{"Type":"test","ID":"card56642","Title":"陰翳礼讃","URL":"https://www.aozora.gr.jp/cards/001383/card56642.html","Image":{"URL":"https://text.baldanders.info/images/aozora/card56642.svg","Height":227,"Width":321},"ProductType":"Book","Authors":["谷崎 潤一郎"],"Publisher":"青空文庫","Codes":[{"Name":"青空文庫","Value":"card56642"}],"PublicationDate":"2016-06-10","LastRelease":"2019-02-24","Service":{"Name":"青空文庫","URL":"https://www.aozora.gr.jp/"}}`
+var testBookData = `{"Type":"test","ID":"card56642","Title":"陰翳礼讃","URL":"https://www.aozora.gr.jp/cards/001383/card56642.html","Image":{"URL":"https://text.baldanders.info/images/aozora/card56642.svg","Height":227,"Width":321},"ProductType":"Book","Creators":[{"Name":"谷崎 潤一郎","Role":"著"}],"Publisher":"青空文庫","Codes":[{"Name":"青空文庫","Value":"card56642"}],"PublicationDate":"2016-06-10","LastRelease":"2019-02-24","Service":{"Name":"青空文庫","URL":"https://www.aozora.gr.jp/"}}`
 var testBookRes = `@BOOK{Book:card56642,
     TITLE = "陰翳礼讃",
-    AUTHOR = "谷崎 潤一郎",
+    AUTHOR = "谷崎 潤一郎 (著)",
     PUBLISHER = {青空文庫},
     YEAR = 2016
 }
