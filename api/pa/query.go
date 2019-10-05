@@ -44,22 +44,15 @@ func (q *Query) Payload() ([]byte, error) {
 	if q == nil {
 		return nil, errs.Wrap(paapi5.ErrNullPointer, "")
 	}
-	q.Resources = []string{}
-	q.Resources = append(
-		q.Resources,
+	q.Resources = []string{
 		"Images.Primary.Medium",
 		"ItemInfo.ByLineInfo",
 		"ItemInfo.ContentInfo",
-		"ItemInfo.ContentRating",
 		"ItemInfo.Classifications",
 		"ItemInfo.ExternalIds",
-		"ItemInfo.Features",
-		"ItemInfo.ManufactureInfo",
 		"ItemInfo.ProductInfo",
-		"ItemInfo.TechnicalInfo",
 		"ItemInfo.Title",
-		"ItemInfo.TradeInInfo",
-	)
+	}
 	b, err := json.Marshal(q)
 	return b, errs.Wrap(err, "")
 }

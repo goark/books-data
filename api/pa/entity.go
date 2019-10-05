@@ -87,19 +87,10 @@ type Item struct {
 			}
 			PublicationDate GenInfoTime
 		} `json:",omitempty"`
-		ContentRating *struct {
-			AudienceRating GenInfo
-		} `json:",omitempty"`
 		ExternalIds *struct {
 			EANs  *IdInfo `json:",omitempty"`
 			ISBNs *IdInfo `json:",omitempty"`
 			UPCs  *IdInfo `json:",omitempty"`
-		} `json:",omitempty"`
-		Features        *IdInfo `json:",omitempty"`
-		ManufactureInfo *struct {
-			ItemPartNumber *GenInfo `json:",omitempty"`
-			Model          *GenInfo `json:",omitempty"`
-			Warranty       *GenInfo `json:",omitempty"`
 		} `json:",omitempty"`
 		ProductInfo *struct {
 			Color          *GenInfo `json:",omitempty"`
@@ -118,18 +109,7 @@ type Item struct {
 			Size        *GenInfo     `json:",omitempty"`
 			UnitCount   *GenInfoInt  `json:",omitempty"`
 		} `json:",omitempty"`
-		TechnicalInfo *struct {
-			Formats IdInfo
-		} `json:",omitempty"`
-		Title       *GenInfo `json:",omitempty"`
-		TradeInInfo *struct {
-			IsEligibleForTradeIn bool
-			Price                struct {
-				DisplayAmount string
-				Amount        float64
-				Currency      string
-			}
-		} `json:",omitempty"`
+		Title *GenInfo `json:",omitempty"`
 	}
 }
 
