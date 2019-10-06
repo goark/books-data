@@ -37,7 +37,7 @@ func (a *OpenBD) Name() string {
 
 ///LookupRawData returns openBD raw data
 func (a *OpenBD) LookupRawData(id string) (io.Reader, error) {
-	res, err := a.server.CreateClient(a.ctx, &http.Client{}).LookupBooksRaw([]string{id})
+	res, err := a.server.CreateClient(obd.WithContext(a.ctx), obd.WithHttpCilent(&http.Client{})).LookupBooksRaw([]string{id})
 	if err != nil {
 		return nil, errs.Wrap(
 			err,

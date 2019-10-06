@@ -44,7 +44,7 @@ func (a *PAAPI5) Name() string {
 
 ///LookupRawData returns PA-API raw data
 func (a *PAAPI5) LookupRawData(id string) (io.Reader, error) {
-	client := a.server.CreateClient(a.ctx, &http.Client{}, a.associateTag, a.accessKey, a.secretKey)
+	client := a.server.CreateClient(a.associateTag, a.accessKey, a.secretKey, paapi5.WithContext(a.ctx), paapi5.WithHttpCilent(&http.Client{}))
 	q := NewQuery(client.Marketplace(), client.PartnerTag(), client.PartnerType(), []string{id})
 	body, err := client.Request(q)
 	if err != nil {
