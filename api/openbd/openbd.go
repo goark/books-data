@@ -37,12 +37,12 @@ func (a *OpenBD) Name() string {
 
 ///LookupRawData returns openBD raw data
 func (a *OpenBD) LookupRawData(id string) (io.Reader, error) {
-	res, err := a.server.CreateClient(obd.WithContext(a.ctx), obd.WithHttpCilent(&http.Client{})).LookupBooksRaw([]string{id})
+	res, err := a.server.CreateClient(obd.WithContext(a.ctx), obd.WithHttpClient(&http.Client{})).LookupBooksRaw([]string{id})
 	if err != nil {
 		return nil, errs.Wrap(
 			err,
 			fmt.Sprintf("invalid book id: %v", id),
-			errs.WithParam("id", id),
+			errs.WithContext("id", id),
 		)
 	}
 	return bytes.NewReader(res), nil
@@ -52,14 +52,14 @@ func (a *OpenBD) LookupRawData(id string) (io.Reader, error) {
 func (a *OpenBD) LookupBook(id string) (*entity.Book, error) {
 	data, err := a.LookupRawData(id)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
+		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
 	}
 	bd, err := unmarshalJSON(data)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
+		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
 	}
 	if !bd.IsValid() {
-		return nil, errs.Wrap(ecode.ErrInvalidAPIResponse, "", errs.WithParam("id", id))
+		return nil, errs.Wrap(ecode.ErrInvalidAPIResponse, "", errs.WithContext("id", id))
 	}
 
 	book := &entity.Book{

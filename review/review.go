@@ -101,18 +101,18 @@ func (rev *Review) SetRating(r int) *Review {
 
 func (r *Review) Format(tmpltPath string) ([]byte, error) {
 	if r == nil {
-		return nil, errs.Wrap(ecode.ErrNullPointer, "", errs.WithParam("tmpltPath", tmpltPath))
+		return nil, errs.Wrap(ecode.ErrNullPointer, "", errs.WithContext("tmpltPath", tmpltPath))
 	}
 	if len(tmpltPath) == 0 {
 		b, err := json.Marshal(r)
 		if err != nil {
-			return nil, errs.Wrap(err, "", errs.WithParam("tmpltPath", tmpltPath))
+			return nil, errs.Wrap(err, "", errs.WithContext("tmpltPath", tmpltPath))
 		}
 		return b, nil
 	}
 	buf, err := format.ByTemplateFile(r, tmpltPath)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithParam("tmpltPath", tmpltPath))
+		return nil, errs.Wrap(err, "", errs.WithContext("tmpltPath", tmpltPath))
 	}
 	return buf.Bytes(), nil
 }

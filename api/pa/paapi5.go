@@ -32,7 +32,7 @@ func New(ctx context.Context, marketplace, associateTag, accessKey, secretKey st
 		associateTag: associateTag,
 		accessKey:    accessKey,
 		secretKey:    secretKey,
-		server:       paapi5.New(paapi5.WithMarketplace(marketplace)),
+		server:       paapi5.New(paapi5.WithMarketplace(paapi5.MarketplaceOf(marketplace))),
 		ctx:          ctx,
 	}
 }
@@ -44,11 +44,17 @@ func (a *PAAPI5) Name() string {
 
 ///LookupRawData returns PA-API raw data
 func (a *PAAPI5) LookupRawData(id string) (io.Reader, error) {
-	client := a.server.CreateClient(a.associateTag, a.accessKey, a.secretKey, paapi5.WithContext(a.ctx), paapi5.WithHttpCilent(&http.Client{}))
+	client := a.server.CreateClient(
+		a.associateTag,
+		a.accessKey,
+		a.secretKey,
+		paapi5.WithContext(a.ctx),
+		paapi5.WithHttpClient(&http.Client{}),
+	)
 	q := NewQuery(client.Marketplace(), client.PartnerTag(), client.PartnerType(), []string{id})
 	body, err := client.Request(q)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
+		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
 	}
 
 	return bytes.NewReader(body), nil
@@ -58,14 +64,14 @@ func (a *PAAPI5) LookupRawData(id string) (io.Reader, error) {
 func (a *PAAPI5) LookupBook(id string) (*entity.Book, error) {
 	r, err := a.LookupRawData(id)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
+		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
 	}
 	rsp := Response{}
 	if err := json.NewDecoder(r).Decode(&rsp); err != nil {
-		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
+		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
 	}
 	book, err := rsp.Output(a.Name())
-	return book, errs.Wrap(err, "", errs.WithParam("id", id))
+	return book, errs.Wrap(err, "", errs.WithContext("id", id))
 }
 
 /* Copyright 2019 Spiegel

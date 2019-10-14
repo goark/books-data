@@ -22,7 +22,7 @@ func ImportJSONFile(path string) (Reviews, error) {
 	defer file.Close()
 
 	rv, err := ImportJSON(file)
-	return rv, errs.Wrap(err, "", errs.WithParam("path", path))
+	return rv, errs.Wrap(err, "", errs.WithContext("path", path))
 }
 
 //ImportJSONFile import Reviews data with JSON format
@@ -46,7 +46,7 @@ func (revs Reviews) exportJSON() (*bytes.Buffer, error) {
 func (revs Reviews) ExportJSONFile(path string) error {
 	file, err := os.Create(path)
 	if err != nil {
-		return errs.Wrap(err, "", errs.WithParam("path", path))
+		return errs.Wrap(err, "", errs.WithContext("path", path))
 	}
 	defer file.Close()
 
@@ -55,7 +55,7 @@ func (revs Reviews) ExportJSONFile(path string) error {
 		return err
 	}
 	_, err = io.Copy(file, b)
-	return errs.Wrap(err, "", errs.WithParam("path", path))
+	return errs.Wrap(err, "", errs.WithContext("path", path))
 }
 
 func (revs Reviews) String() string {
