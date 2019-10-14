@@ -207,7 +207,7 @@ func (r *Response) CheckError() error {
 		for _, e := range r.Errors {
 			es = append(es, fmt.Sprintf("%s (%s)", e.Message, e.Code))
 		}
-		return errs.New(msg, errs.WithParam("detail", strings.Join(es, "\n")))
+		return errs.New(msg, errs.WithContext("detail", strings.Join(es, "\n")))
 	}
 	return nil
 }

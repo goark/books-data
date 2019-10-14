@@ -81,18 +81,18 @@ func ImportBookFromJSON(r io.Reader) (*Book, error) {
 
 func (b *Book) Format(tmpltPath string) ([]byte, error) {
 	if b == nil {
-		return nil, errs.Wrap(ecode.ErrNullPointer, "", errs.WithParam("tmpltPath", tmpltPath))
+		return nil, errs.Wrap(ecode.ErrNullPointer, "", errs.WithContext("tmpltPath", tmpltPath))
 	}
 	if len(tmpltPath) == 0 {
 		b, err := json.Marshal(b)
 		if err != nil {
-			return nil, errs.Wrap(err, "", errs.WithParam("tmpltPath", tmpltPath))
+			return nil, errs.Wrap(err, "", errs.WithContext("tmpltPath", tmpltPath))
 		}
 		return b, nil
 	}
 	buf, err := format.ByTemplateFile(b, tmpltPath)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithParam("tmpltPath", tmpltPath))
+		return nil, errs.Wrap(err, "", errs.WithContext("tmpltPath", tmpltPath))
 	}
 	return buf.Bytes(), nil
 }

@@ -57,11 +57,11 @@ func searchPAAPI(ctx context.Context, id string, p *paapiParams, rawFlag bool) (
 	}
 	book, err := createPAAPI(ctx, p).LookupBook(id)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
+		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
 	}
 	b, err := book.Format(tmpltPath)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithParam("id", id))
+		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
 	}
 	return bytes.NewReader(b), nil
 }
