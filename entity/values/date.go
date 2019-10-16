@@ -33,7 +33,10 @@ var timeTemplate2 = []string{
 
 //UnmarshalJSON returns result of Unmarshal for json.Unmarshal()
 func (t *Date) UnmarshalJSON(b []byte) error {
-	s := strings.Trim(string(b), "\"")
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		s = string(b)
+	}
 	if len(s) == 0 || strings.ToLower(s) == "null" {
 		*t = Date{time.Time{}}
 		return nil
