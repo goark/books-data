@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"strings"
-	"time"
 
 	"github.com/spiegel-im-spiegel/books-data/ecode"
 	"github.com/spiegel-im-spiegel/books-data/entity"
@@ -31,7 +30,7 @@ type GenInfoFloat struct {
 }
 
 type GenInfoTime struct {
-	DisplayValue time.Time
+	DisplayValue values.Date
 	Label        string `json:",omitempty"`
 	Locale       string `json:",omitempty"`
 }
@@ -178,14 +177,14 @@ func (i *Item) Publisher() string {
 
 func (i *Item) PublicationDate() values.Date {
 	if i.ItemInfo != nil && i.ItemInfo.ContentInfo != nil {
-		return values.NewDate(i.ItemInfo.ContentInfo.PublicationDate.DisplayValue)
+		return i.ItemInfo.ContentInfo.PublicationDate.DisplayValue
 	}
 	return values.Date{}
 }
 
 func (i *Item) LastRelease() values.Date {
 	if i.ItemInfo != nil && i.ItemInfo.ProductInfo != nil && i.ItemInfo.ProductInfo.ReleaseDate != nil {
-		return values.NewDate(i.ItemInfo.ProductInfo.ReleaseDate.DisplayValue)
+		return i.ItemInfo.ProductInfo.ReleaseDate.DisplayValue
 	}
 	return values.Date{}
 }
