@@ -29,6 +29,7 @@ var timeTemplate2 = []string{
 	"20060102",
 	"200601",
 	"2006",
+	"2006T",
 }
 
 //UnmarshalJSON returns result of Unmarshal for json.Unmarshal()
