@@ -1,7 +1,7 @@
 package values
 
 import (
-	"fmt"
+	"strconv"
 	"strings"
 	"time"
 
@@ -18,42 +18,52 @@ func NewDate(tm time.Time) Date {
 	return Date{tm}
 }
 
+var timeTemplate1 = []string{
+	"2006-01-02",
+	"2006-01",
+	"2006-01T",
+	time.RFC3339,
+}
+
+var timeTemplate2 = []string{
+	"20060102",
+	"200601",
+	"2006",
+	"2006T",
+}
+
 //UnmarshalJSON returns result of Unmarshal for json.Unmarshal()
 func (t *Date) UnmarshalJSON(b []byte) error {
-	s := strings.Trim(string(b), "\"")
+	s, err := strconv.Unquote(string(b))
+	if err != nil {
+		s = string(b)
+	}
 	if len(s) == 0 || strings.ToLower(s) == "null" {
 		*t = Date{time.Time{}}
 		return nil
 	}
 	if strings.Contains(s, "-") {
-		tm, err := time.Parse("2006-01-02", s)
-		if err == nil {
+		var lastErr error
+		for _, tmplt := range timeTemplate1 {
+			if tm, err := time.Parse(tmplt, s); err != nil {
+				lastErr = errs.Wrap(err, "", errs.WithContext("time_string", s), errs.WithContext("time_template", tmplt))
+			} else {
+				*t = Date{tm}
+				return nil
+			}
+		}
+		return lastErr
+	}
+	var lastErr error
+	for _, tmplt := range timeTemplate2 {
+		if tm, err := time.Parse(tmplt, s); err != nil {
+			lastErr = errs.Wrap(err, "", errs.WithContext("time_string", s), errs.WithContext("time_template", tmplt))
+		} else {
 			*t = Date{tm}
 			return nil
 		}
-		tm, err = time.Parse("2006-01", s)
-		if err == nil {
-			*t = Date{tm}
-			return nil
-		}
-		tm, err = time.Parse(time.RFC3339, s)
-		if err == nil {
-			*t = Date{tm}
-			return nil
-		}
-		return errs.Wrap(err, "")
 	}
-	tm, err := time.Parse("20060102", s)
-	if err == nil {
-		*t = Date{tm}
-		return nil
-	}
-	tm, err = time.Parse("200601", s)
-	if err == nil {
-		*t = Date{tm}
-		return nil
-	}
-	return errs.Wrap(err, "")
+	return lastErr
 }
 
 //MarshalJSON returns time string with RFC3339 format
@@ -64,7 +74,7 @@ func (t *Date) MarshalJSON() ([]byte, error) {
 	if t.IsZero() {
 		return []byte("\"\""), nil
 	}
-	return []byte(fmt.Sprintf("\"%v\"", t)), nil
+	return []byte(strconv.Quote(t.String())), nil
 }
 
 func (t Date) String() string {
