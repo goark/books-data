@@ -97,8 +97,8 @@ github.com/spiegel-im-spiegel/gocli v0.10.1 h1:XWyq4dKFp2xTjiH2P2bxPZyi0++4IHp9H
 github.com/spiegel-im-spiegel/gocli v0.10.1/go.mod h1:9vRvly2giutJ2sAtQjrw570p9ulJA3twgKlurmnj12g=
 github.com/spiegel-im-spiegel/openbd-api v0.2.3 h1:3iV0TEQmznT8jxoYFlVM1ZUd1vhi3owUhvbrevB/FvM=
 github.com/spiegel-im-spiegel/openbd-api v0.2.3/go.mod h1:M258g8imPwlFkoJR+wlfVVsMZJIKJlKx46Fzf4d2dr8=
-github.com/spiegel-im-spiegel/pa-api v0.4.1 h1:OD58th423L37Bm5T+Sc7hi66RXJuLgpvH5TZuvCQRfY=
-github.com/spiegel-im-spiegel/pa-api v0.4.1/go.mod h1:2ugBqfnaqLnBtKd/rDmOqOhFum5thuXwojf8Uh98h+k=
+github.com/spiegel-im-spiegel/pa-api v0.5.0 h1:erwGRBgoSy24NdVE+DPi7P3mViGz9Tz4TKkPkP+f3Ak=
+github.com/spiegel-im-spiegel/pa-api v0.5.0/go.mod h1:2ugBqfnaqLnBtKd/rDmOqOhFum5thuXwojf8Uh98h+k=
 github.com/stretchr/objx v0.1.1/go.mod h1:HFkY916IF+rwdDfMAkV7OtwuqBVzrE8GR6GFx+wExME=
 github.com/stretchr/testify v1.2.2/go.mod h1:a8OnRcib4nhh0OaRAV+Yts87kKdq0PP7pXfy6kDkUVs=
 github.com/tmc/grpc-websocket-proxy v0.0.0-20190109142713-0ad062ec5ee5/go.mod h1:ncp9v5uamzpCO7NfCPTXjqaC+bZgJeR0sMTm6dMHP7U=

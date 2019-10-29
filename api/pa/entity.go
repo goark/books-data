@@ -169,7 +169,7 @@ func (i *Item) Creators() []entity.Creator {
 }
 
 func (i *Item) Publisher() string {
-	if i.ItemInfo != nil && i.ItemInfo.ByLineInfo != nil {
+	if i.ItemInfo != nil && i.ItemInfo.ByLineInfo != nil && i.ItemInfo.ByLineInfo.Manufacturer != nil {
 		return i.ItemInfo.ByLineInfo.Manufacturer.DisplayValue
 	}
 	return ""
