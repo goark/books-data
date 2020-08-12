@@ -27,38 +27,38 @@ func newReviewCmd(ui *rwi.RWI) *cobra.Command {
 			//pipe flag
 			pipeFlag, err := cmd.Flags().GetBool("pipe")
 			if err != nil {
-				return errs.Wrap(err, "--pipe")
+				return errs.New("--pipe", errs.WithCause(err))
 			}
 			//Ratins
 			rating, err := cmd.Flags().GetInt("rating")
 			if err != nil {
-				return errs.Wrap(err, "--rating")
+				return errs.New("--rating", errs.WithCause(err))
 			}
 			//Date of review
 			dt, err := cmd.Flags().GetString("review-date")
 			if err != nil {
-				return errs.Wrap(err, "--review-date")
+				return errs.New("--review-date", errs.WithCause(err))
 			}
 			//URL of book page
 			bookpage, err := cmd.Flags().GetString("bookpage-url")
 			if err != nil {
-				return errs.Wrap(err, "--bookpage-url")
+				return errs.New("--bookpage-url", errs.WithCause(err))
 			}
 			//URL of book cover image
 			bookcover, err := cmd.Flags().GetString("image-url")
 			if err != nil {
-				return errs.Wrap(err, "--image-url")
+				return errs.New("--image-url", errs.WithCause(err))
 			}
 			//Description
 			desc := ""
 			if pipeFlag {
 				w := &strings.Builder{}
 				if _, err := io.Copy(w, ui.Reader()); err != nil {
-					return debugPrint(ui, errs.Wrap(err, "Cannot read Stdin"))
+					return debugPrint(ui, errs.New("Cannot read Stdin", errs.WithCause(err)))
 				}
 				desc = w.String()
 			} else if len(args) > 1 {
-				return errs.Wrap(os.ErrInvalid, strings.Join(args, " "))
+				return errs.Wrap(os.ErrInvalid, errs.WithContext("args", strings.Join(args, ",")))
 			} else if len(args) == 1 {
 				desc = args[0]
 			}
@@ -100,7 +100,7 @@ func newReviewCmd(ui *rwi.RWI) *cobra.Command {
 				}
 			}
 			if err == nil && bk == nil {
-				err = errs.Wrap(ecode.ErrNoData, "error in review command")
+				err = errs.New("error in review command", errs.WithCause(ecode.ErrNoData))
 			}
 			if err != nil {
 				return debugPrint(ui, err)
@@ -141,16 +141,16 @@ func updateReviewLog(rev *review.Review) error {
 	}
 	revs, err := logger.ImportJSONFile(path)
 	if err != nil {
-		return errs.Wrap(err, "")
+		return errs.Wrap(err)
 	}
 	revs = revs.Append(rev)
 	if err := revs.ExportJSONFile(path); err != nil {
-		return errs.Wrap(err, "")
+		return errs.Wrap(err)
 	}
 	return nil
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019,2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -20,14 +20,14 @@ func newHistroyCmd(ui *rwi.RWI) *cobra.Command {
 		RunE: func(cmd *cobra.Command, args []string) error {
 			logf := viper.GetString("review-log")
 			if len(logf) == 0 {
-				return debugPrint(ui, errs.Wrap(ecode.ErrNoData, "error in history command"))
+				return debugPrint(ui, errs.New("error in history command", errs.WithCause(ecode.ErrNoData)))
 			}
 			revs, err := logger.ImportJSONFile(logf)
 			if err != nil {
 				return debugPrint(ui, err)
 			}
 			if len(revs) == 0 {
-				return debugPrint(ui, errs.Wrap(ecode.ErrNoData, "error in history command"))
+				return debugPrint(ui, errs.New("error in history command", errs.WithCause(ecode.ErrNoData)))
 			}
 
 			var rev *review.Review = nil
@@ -44,7 +44,7 @@ func newHistroyCmd(ui *rwi.RWI) *cobra.Command {
 				rev = revs.Find(api.TypeAozoraAPI.String(), card)
 			}
 			if rev == nil {
-				return debugPrint(ui, errs.Wrap(ecode.ErrNoData, "error in history command"))
+				return debugPrint(ui, errs.New("error in history command", errs.WithCause(ecode.ErrNoData)))
 			}
 
 			b, err := rev.Format(tmpltPath)
@@ -59,7 +59,7 @@ func newHistroyCmd(ui *rwi.RWI) *cobra.Command {
 	return historyCmd
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019,2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

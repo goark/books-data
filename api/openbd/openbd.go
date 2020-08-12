@@ -39,9 +39,9 @@ func (a *OpenBD) Name() string {
 func (a *OpenBD) LookupRawData(id string) (io.Reader, error) {
 	res, err := a.server.CreateClient(obd.WithContext(a.ctx), obd.WithHttpClient(&http.Client{})).LookupBooksRaw([]string{id})
 	if err != nil {
-		return nil, errs.Wrap(
-			err,
+		return nil, errs.New(
 			fmt.Sprintf("invalid book id: %v", id),
+			errs.WithCause(err),
 			errs.WithContext("id", id),
 		)
 	}
@@ -52,14 +52,14 @@ func (a *OpenBD) LookupRawData(id string) (io.Reader, error) {
 func (a *OpenBD) LookupBook(id string) (*entity.Book, error) {
 	data, err := a.LookupRawData(id)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
+		return nil, errs.Wrap(err, errs.WithContext("id", id))
 	}
 	bd, err := unmarshalJSON(data)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
+		return nil, errs.Wrap(err, errs.WithContext("id", id))
 	}
 	if !bd.IsValid() {
-		return nil, errs.Wrap(ecode.ErrInvalidAPIResponse, "", errs.WithContext("id", id))
+		return nil, errs.Wrap(ecode.ErrInvalidAPIResponse, errs.WithContext("id", id))
 	}
 
 	book := &entity.Book{
@@ -96,15 +96,15 @@ func getCreators(bd *obd.Book) []entity.Creator {
 func unmarshalJSON(jsondata io.Reader) (*obd.Book, error) {
 	books := []obd.Book{}
 	if err := json.NewDecoder(jsondata).Decode(&books); err != nil {
-		return nil, errs.Wrap(err, "")
+		return nil, errs.Wrap(err)
 	}
 	if len(books) == 0 {
-		return nil, errs.Wrap(ecode.ErrNoData, "")
+		return nil, errs.Wrap(ecode.ErrNoData)
 	}
 	return &books[0], nil
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019,2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -24,19 +24,19 @@ type paapiParams struct {
 func getPaapiParams() (*paapiParams, error) {
 	marketplace := viper.GetString("marketplace")
 	if len(marketplace) == 0 {
-		return nil, errs.Wrap(ecode.ErrInvalidAPIParameter, "marketplace is empty")
+		return nil, errs.New("marketplace is empty", errs.WithCause(ecode.ErrInvalidAPIParameter))
 	}
 	associateTag := viper.GetString("associate-tag")
 	if len(associateTag) == 0 {
-		return nil, errs.Wrap(ecode.ErrInvalidAPIParameter, "associate-tag is empty")
+		return nil, errs.New("associate-tag is empty", errs.WithCause(ecode.ErrInvalidAPIParameter))
 	}
 	accessKey := viper.GetString("access-key")
 	if len(accessKey) == 0 {
-		return nil, errs.Wrap(ecode.ErrInvalidAPIParameter, "access-key is empty")
+		return nil, errs.New("access-key is empty", errs.WithCause(ecode.ErrInvalidAPIParameter))
 	}
 	secretKey := viper.GetString("secret-key")
 	if len(secretKey) == 0 {
-		return nil, errs.Wrap(ecode.ErrInvalidAPIParameter, "secret-key is empty")
+		return nil, errs.New("secret-key is empty", errs.WithCause(ecode.ErrInvalidAPIParameter))
 	}
 	return &paapiParams{marketplace: marketplace, associateTag: associateTag, accessKey: accessKey, secretKey: secretKey}, nil
 }
@@ -57,11 +57,11 @@ func searchPAAPI(ctx context.Context, id string, p *paapiParams, rawFlag bool) (
 	}
 	book, err := createPAAPI(ctx, p).LookupBook(id)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
+		return nil, errs.Wrap(err, errs.WithContext("id", id))
 	}
 	b, err := book.Format(tmpltPath)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
+		return nil, errs.Wrap(err, errs.WithContext("id", id))
 	}
 	return bytes.NewReader(b), nil
 }
@@ -70,7 +70,7 @@ func findPAAPI(ctx context.Context, id string, p *paapiParams) (*entity.Book, er
 	return createPAAPI(ctx, p).LookupBook(id)
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019,2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

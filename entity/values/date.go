@@ -46,7 +46,7 @@ func (t *Date) UnmarshalJSON(b []byte) error {
 		var lastErr error
 		for _, tmplt := range timeTemplate1 {
 			if tm, err := time.Parse(tmplt, s); err != nil {
-				lastErr = errs.Wrap(err, "", errs.WithContext("time_string", s), errs.WithContext("time_template", tmplt))
+				lastErr = errs.Wrap(err, errs.WithContext("time_string", s), errs.WithContext("time_template", tmplt))
 			} else {
 				*t = Date{tm}
 				return nil
@@ -57,7 +57,7 @@ func (t *Date) UnmarshalJSON(b []byte) error {
 	var lastErr error
 	for _, tmplt := range timeTemplate2 {
 		if tm, err := time.Parse(tmplt, s); err != nil {
-			lastErr = errs.Wrap(err, "", errs.WithContext("time_string", s), errs.WithContext("time_template", tmplt))
+			lastErr = errs.Wrap(err, errs.WithContext("time_string", s), errs.WithContext("time_template", tmplt))
 		} else {
 			*t = Date{tm}
 			return nil

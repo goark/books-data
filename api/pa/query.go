@@ -42,7 +42,7 @@ func (q *Query) Operation() paapi5.Operation {
 
 func (q *Query) Payload() ([]byte, error) {
 	if q == nil {
-		return nil, errs.Wrap(paapi5.ErrNullPointer, "")
+		return nil, errs.Wrap(paapi5.ErrNullPointer)
 	}
 	q.Resources = []string{
 		"Images.Primary.Medium",
@@ -54,7 +54,7 @@ func (q *Query) Payload() ([]byte, error) {
 		"ItemInfo.Title",
 	}
 	b, err := json.Marshal(q)
-	return b, errs.Wrap(err, "")
+	return b, errs.Wrap(err)
 }
 
 func (q *Query) String() string {
@@ -65,7 +65,7 @@ func (q *Query) String() string {
 	return string(b)
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019,2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

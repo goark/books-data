@@ -213,13 +213,13 @@ func (r *Response) CheckError() error {
 
 func (r *Response) Output(typeName string) (*entity.Book, error) {
 	if r == nil {
-		return nil, errs.Wrap(ecode.ErrNullPointer, "")
+		return nil, errs.Wrap(ecode.ErrNullPointer)
 	}
 	if err := r.CheckError(); err != nil {
-		return nil, errs.Wrap(err, "")
+		return nil, errs.Wrap(err)
 	}
 	if len(r.ItemsResult.Items) == 0 {
-		return nil, errs.Wrap(ecode.ErrNoData, "")
+		return nil, errs.Wrap(ecode.ErrNoData)
 	}
 	item := r.ItemsResult.Items[0]
 	book := &entity.Book{
@@ -243,7 +243,7 @@ func (r *Response) Output(typeName string) (*entity.Book, error) {
 //JSON returns JSON data from Response instance
 func (r *Response) JSON() ([]byte, error) {
 	b, err := json.Marshal(r)
-	return b, errs.Wrap(err, "")
+	return b, errs.Wrap(err)
 }
 
 //Stringer
@@ -255,7 +255,7 @@ func (r *Response) String() string {
 	return string(b)
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019,2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -54,7 +54,7 @@ func (a *PAAPI5) LookupRawData(id string) (io.Reader, error) {
 	q := NewQuery(client.Marketplace(), client.PartnerTag(), client.PartnerType(), []string{id})
 	body, err := client.Request(q)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
+		return nil, errs.Wrap(err, errs.WithContext("id", id))
 	}
 
 	return bytes.NewReader(body), nil
@@ -64,17 +64,17 @@ func (a *PAAPI5) LookupRawData(id string) (io.Reader, error) {
 func (a *PAAPI5) LookupBook(id string) (*entity.Book, error) {
 	r, err := a.LookupRawData(id)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
+		return nil, errs.Wrap(err, errs.WithContext("id", id))
 	}
 	rsp := Response{}
 	if err := json.NewDecoder(r).Decode(&rsp); err != nil {
-		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
+		return nil, errs.Wrap(err, errs.WithContext("id", id))
 	}
 	book, err := rsp.Output(a.Name())
-	return book, errs.Wrap(err, "", errs.WithContext("id", id))
+	return book, errs.Wrap(err, errs.WithContext("id", id))
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019,2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
