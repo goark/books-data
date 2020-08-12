@@ -22,7 +22,7 @@ func ImportJSONFile(path string) (Reviews, error) {
 	defer file.Close()
 
 	rv, err := ImportJSON(file)
-	return rv, errs.Wrap(err, "", errs.WithContext("path", path))
+	return rv, errs.Wrap(err, errs.WithContext("path", path))
 }
 
 //ImportJSONFile import Reviews data with JSON format
@@ -30,7 +30,7 @@ func ImportJSON(r io.Reader) (Reviews, error) {
 	dec := json.NewDecoder(r)
 	revs := Reviews{}
 	err := dec.Decode(&revs)
-	return revs, errs.Wrap(err, "")
+	return revs, errs.Wrap(err)
 }
 
 //exportJSON returns byte string with JSON format
@@ -39,14 +39,14 @@ func (revs Reviews) exportJSON() (*bytes.Buffer, error) {
 	enc := json.NewEncoder(buf)
 	enc.SetIndent("", "  ")
 	err := enc.Encode(revs)
-	return buf, errs.Wrap(err, "")
+	return buf, errs.Wrap(err)
 }
 
 //ExportJSONFile outputs file with JSON format
 func (revs Reviews) ExportJSONFile(path string) error {
 	file, err := os.Create(path)
 	if err != nil {
-		return errs.Wrap(err, "", errs.WithContext("path", path))
+		return errs.Wrap(err, errs.WithContext("path", path))
 	}
 	defer file.Close()
 
@@ -55,7 +55,7 @@ func (revs Reviews) ExportJSONFile(path string) error {
 		return err
 	}
 	_, err = io.Copy(file, b)
-	return errs.Wrap(err, "", errs.WithContext("path", path))
+	return errs.Wrap(err, errs.WithContext("path", path))
 }
 
 func (revs Reviews) String() string {
@@ -87,7 +87,7 @@ func (revs Reviews) Append(rev *review.Review) Reviews {
 	return revs
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019,2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

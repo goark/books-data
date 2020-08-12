@@ -34,36 +34,35 @@ func (a *AozoraAPI) Name() string {
 	return a.svcType.String()
 }
 
-///LookupRawData returns openBD raw data
+//LookupRawData returns openBD raw data
 func (a *AozoraAPI) LookupRawData(id string) (io.Reader, error) {
 	bookId, err := strconv.Atoi(id)
 	if err != nil {
-		return nil, errs.Wrap(
-			err,
+		return nil, errs.New(
 			fmt.Sprintf("invalid book id: %v", id),
 			errs.WithContext("id", id),
 		)
 	}
 	b, err := a.server.CreateClient(aozora.WithContext(a.ctx), aozora.WithHttpClient(&http.Client{})).LookupBookRaw(bookId)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
+		return nil, errs.Wrap(err, errs.WithContext("id", id))
 	}
 	return bytes.NewReader(b), nil
 }
 
-///LookupBook returns Book data from openBD
+//LookupBook returns Book data from openBD
 func (a *AozoraAPI) LookupBook(id string) (*entity.Book, error) {
 	bookId, err := strconv.Atoi(id)
 	if err != nil {
-		return nil, errs.Wrap(
-			err,
+		return nil, errs.New(
 			fmt.Sprintf("invalid book id: %v", id),
+			errs.WithCause(err),
 			errs.WithContext("id", id),
 		)
 	}
 	bk, err := a.server.CreateClient(aozora.WithContext(a.ctx), aozora.WithHttpClient(&http.Client{})).LookupBook(bookId)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithContext("id", id))
+		return nil, errs.Wrap(err, errs.WithContext("id", id))
 	}
 
 	book := &entity.Book{
@@ -104,7 +103,7 @@ func getCreators(bk *aozora.Book) []entity.Creator {
 	return creators
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019,2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

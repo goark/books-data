@@ -7,6 +7,7 @@ import (
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 	"github.com/spiegel-im-spiegel/books-data/ecode"
+	"github.com/spiegel-im-spiegel/errs"
 	"github.com/spiegel-im-spiegel/gocli/config"
 	"github.com/spiegel-im-spiegel/gocli/exitcode"
 	"github.com/spiegel-im-spiegel/gocli/rwi"
@@ -36,7 +37,7 @@ func newRootCmd(ui *rwi.RWI, args []string) *cobra.Command {
 		Short: "Search for books data",
 		Long:  "Search for books data",
 		RunE: func(cmd *cobra.Command, args []string) error {
-			return debugPrint(ui, ecode.ErrNoCommand)
+			return debugPrint(ui, errs.Wrap(ecode.ErrNoCommand))
 		},
 	}
 	rootCmd.SetArgs(args)               //arguments of command-line
@@ -125,7 +126,7 @@ func Execute(ui *rwi.RWI, args []string) (exit exitcode.ExitCode) {
 	return
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019,2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

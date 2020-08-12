@@ -101,18 +101,18 @@ func (rev *Review) SetRating(r int) *Review {
 
 func (r *Review) Format(tmpltPath string) ([]byte, error) {
 	if r == nil {
-		return nil, errs.Wrap(ecode.ErrNullPointer, "", errs.WithContext("tmpltPath", tmpltPath))
+		return nil, errs.Wrap(ecode.ErrNullPointer, errs.WithContext("tmpltPath", tmpltPath))
 	}
 	if len(tmpltPath) == 0 {
 		b, err := json.Marshal(r)
 		if err != nil {
-			return nil, errs.Wrap(err, "", errs.WithContext("tmpltPath", tmpltPath))
+			return nil, errs.Wrap(err, errs.WithContext("tmpltPath", tmpltPath))
 		}
 		return b, nil
 	}
 	buf, err := format.ByTemplateFile(r, tmpltPath)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithContext("tmpltPath", tmpltPath))
+		return nil, errs.Wrap(err, errs.WithContext("tmpltPath", tmpltPath))
 	}
 	return buf.Bytes(), nil
 }
@@ -139,7 +139,7 @@ func (r *Review) CopyFrom(src *Review) *Review {
 	return r
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019,2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

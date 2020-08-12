@@ -76,23 +76,23 @@ func ImportBookFromJSON(r io.Reader) (*Book, error) {
 	dec := json.NewDecoder(r)
 	bk := Book{}
 	err := dec.Decode(&bk)
-	return &bk, errs.Wrap(err, "")
+	return &bk, errs.Wrap(err)
 }
 
 func (b *Book) Format(tmpltPath string) ([]byte, error) {
 	if b == nil {
-		return nil, errs.Wrap(ecode.ErrNullPointer, "", errs.WithContext("tmpltPath", tmpltPath))
+		return nil, errs.Wrap(ecode.ErrNullPointer, errs.WithContext("tmpltPath", tmpltPath))
 	}
 	if len(tmpltPath) == 0 {
 		b, err := json.Marshal(b)
 		if err != nil {
-			return nil, errs.Wrap(err, "", errs.WithContext("tmpltPath", tmpltPath))
+			return nil, errs.Wrap(err, errs.WithContext("tmpltPath", tmpltPath))
 		}
 		return b, nil
 	}
 	buf, err := format.ByTemplateFile(b, tmpltPath)
 	if err != nil {
-		return nil, errs.Wrap(err, "", errs.WithContext("tmpltPath", tmpltPath))
+		return nil, errs.Wrap(err, errs.WithContext("tmpltPath", tmpltPath))
 	}
 	return buf.Bytes(), nil
 }
@@ -117,7 +117,7 @@ func (b *Book) CopyFrom(src *Book) *Book {
 	return b
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019,2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -2,7 +2,6 @@ package facade
 
 import (
 	"context"
-	"errors"
 	"os"
 
 	"github.com/spf13/cobra"
@@ -22,7 +21,7 @@ func newSearchCmd(ui *rwi.RWI) *cobra.Command {
 			//Raw flag (PA-API)
 			rawFlag, err := cmd.Flags().GetBool("raw")
 			if err != nil {
-				return errs.Wrap(err, "--raw")
+				return errs.New("--raw", errs.WithCause(err))
 			}
 
 			//Create context
@@ -78,14 +77,14 @@ func newSearchCmd(ui *rwi.RWI) *cobra.Command {
 
 func checkError(err error) bool {
 	switch true {
-	case errors.Is(err, ecode.ErrInvalidAPIParameter), errors.Is(err, ecode.ErrInvalidAPIResponse), errors.Is(err, ecode.ErrNoData):
+	case errs.Is(err, ecode.ErrInvalidAPIParameter), errs.Is(err, ecode.ErrInvalidAPIResponse), errs.Is(err, ecode.ErrNoData):
 		return true
 	default:
 		return false
 	}
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019,2020 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
