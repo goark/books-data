@@ -1,7 +1,7 @@
 # [books-data] -- Search for Books Data
 
-[![check vulns](https://github.com/spiegel-im-spiegel/gnkf/workflows/vulns/badge.svg)](https://github.com/spiegel-im-spiegel/gnkf/actions)
-[![lint status](https://github.com/spiegel-im-spiegel/gnkf/workflows/lint/badge.svg)](https://github.com/spiegel-im-spiegel/gnkf/actions)
+[![check vulns](https://github.com/spiegel-im-spiegel/books-data/workflows/vulns/badge.svg)](https://github.com/spiegel-im-spiegel/books-data/actions)
+[![lint status](https://github.com/spiegel-im-spiegel/books-data/workflows/lint/badge.svg)](https://github.com/spiegel-im-spiegel/books-data/actions)
 [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/spiegel-im-spiegel/books-data/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/spiegel-im-spiegel/books-data.svg)](https://github.com/spiegel-im-spiegel/books-data/releases/latest)
 
