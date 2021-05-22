@@ -10,11 +10,10 @@ import (
 )
 
 func searchAozoraAPI(ctx context.Context, id string, rawFlag bool) (io.Reader, error) {
-	aozora := aozoraapi.New(ctx)
 	if rawFlag {
-		return aozora.LookupRawData(id)
+		return aozoraapi.New().LookupRawData(ctx, id)
 	}
-	book, err := aozora.LookupBook(id)
+	book, err := aozoraapi.New().LookupBook(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -26,10 +25,10 @@ func searchAozoraAPI(ctx context.Context, id string, rawFlag bool) (io.Reader, e
 }
 
 func findAozoraAPI(ctx context.Context, id string) (*entity.Book, error) {
-	return aozoraapi.New(ctx).LookupBook(id)
+	return aozoraapi.New().LookupBook(ctx, id)
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

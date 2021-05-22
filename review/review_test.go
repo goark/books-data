@@ -1,6 +1,7 @@
 package review
 
 import (
+	"context"
 	"fmt"
 	"testing"
 )
@@ -8,7 +9,7 @@ import (
 func TestReview(t *testing.T) {
 	res := `{"Book":` + testBookResp + `,"Date":"2019-01-01","Rating":4,"Star":[true,true,true,true,false],"Description":"実はちゃんと読んでない（笑） 学生時代に読んでおけばよかった。"}`
 	tc := NewTestAPI()
-	book, err := tc.LookupBook("card56642")
+	book, err := tc.LookupBook(context.Background(), "card56642")
 	if err != nil {
 		t.Errorf("testAPI.LookupBook() error is \"%v\", want nil", err)
 		fmt.Printf("Info: %+v\n", err)
@@ -48,7 +49,7 @@ var formattedText = `<div class="hreview">
 
 func TestTemplate(t *testing.T) {
 	tc := NewTestAPI()
-	book, err := tc.LookupBook("card56642")
+	book, err := tc.LookupBook(context.Background(), "card56642")
 	if err != nil {
 		t.Errorf("testAPI.LookupBook() error is \"%v\", want nil", err)
 		fmt.Printf("Info: %+v\n", err)
@@ -71,7 +72,7 @@ func TestTemplate(t *testing.T) {
 	}
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

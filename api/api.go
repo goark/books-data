@@ -1,6 +1,7 @@
 package api
 
 import (
+	"context"
 	"io"
 
 	"github.com/spiegel-im-spiegel/books-data/entity"
@@ -8,9 +9,9 @@ import (
 
 //API is interface class  for searching book API
 type API interface {
-	Name() string                               //Name of API
-	LookupBook(id string) (*entity.Book, error) //Lookup book data by API
-	LookupRawData(id string) (io.Reader, error) //Lookup raw data by API
+	Name() string                                                    //Name of API
+	LookupBook(ctx context.Context, id string) (*entity.Book, error) //Lookup book data by API
+	LookupRawData(ctx context.Context, id string) (io.Reader, error) //Lookup raw data by API
 }
 
 /* Copyright 2019 Spiegel

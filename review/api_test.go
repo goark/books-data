@@ -2,6 +2,7 @@ package review
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"fmt"
 	"io"
@@ -23,12 +24,12 @@ func (ta testAPI) Name() string {
 	return "test"
 }
 
-func (ta testAPI) LookupRawData(id string) (io.Reader, error) {
+func (ta testAPI) LookupRawData(ctx context.Context, id string) (io.Reader, error) {
 	return bytes.NewBufferString(ta.output), nil
 }
 
-func (ta testAPI) LookupBook(id string) (*entity.Book, error) {
-	r, _ := ta.LookupRawData(id)
+func (ta testAPI) LookupBook(ctx context.Context, id string) (*entity.Book, error) {
+	r, _ := ta.LookupRawData(ctx, id)
 	dec := json.NewDecoder(r)
 	books := &entity.Book{}
 	if err := dec.Decode(books); err != nil {
@@ -78,7 +79,7 @@ var (
 
 func TestAPI(t *testing.T) {
 	tc := NewTestAPI()
-	book, err := tc.LookupBook("card56642")
+	book, err := tc.LookupBook(context.Background(), "card56642")
 	if err != nil {
 		t.Errorf("testAPI.LookupBook() error is \"%v\", want nil", err)
 		fmt.Printf("Info: %+v\n", err)
@@ -90,7 +91,7 @@ func TestAPI(t *testing.T) {
 	}
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
