@@ -5,10 +5,12 @@
 [![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/spiegel-im-spiegel/books-data/master/LICENSE)
 [![GitHub release](https://img.shields.io/github/release/spiegel-im-spiegel/books-data.svg)](https://github.com/spiegel-im-spiegel/books-data/releases/latest)
 
-## Download and Build
+This package is required Go 1.16 or later.
+
+## Build and Install
 
 ```
-$ go get github.com/spiegel-im-spiegel/books-data@latest
+$ go install github.com/spiegel-im-spiegel/books-data@latest
 ```
 
 ### Binaries
@@ -402,6 +404,10 @@ $ books-data history -i 9784274069321 -t testdata/review-template/template.html
   <p class="powered-by" >reviewed by <a href='#maker' class='reviewer'>Spiegel</a> on <abbr class="dtreviewed" title="2019-10-05">2019-10-05</abbr> (powered by <a href="https://openbd.jp/" >openBD</a>)</p>
 </div>
 ```
+
+## Modules Requirement Graph
+
+[![dependency.png](./dependency.png)](./dependency.png)
 
 ## Reference
 

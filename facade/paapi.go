@@ -41,9 +41,8 @@ func getPaapiParams() (*paapiParams, error) {
 	return &paapiParams{marketplace: marketplace, associateTag: associateTag, accessKey: accessKey, secretKey: secretKey}, nil
 }
 
-func createPAAPI(ctx context.Context, p *paapiParams) api.API {
+func createPAAPI(p *paapiParams) api.API {
 	return pa.New(
-		ctx,
 		p.marketplace,
 		p.associateTag,
 		p.accessKey,
@@ -53,9 +52,9 @@ func createPAAPI(ctx context.Context, p *paapiParams) api.API {
 
 func searchPAAPI(ctx context.Context, id string, p *paapiParams, rawFlag bool) (io.Reader, error) {
 	if rawFlag {
-		return createPAAPI(ctx, p).LookupRawData(id)
+		return createPAAPI(p).LookupRawData(ctx, id)
 	}
-	book, err := createPAAPI(ctx, p).LookupBook(id)
+	book, err := createPAAPI(p).LookupBook(ctx, id)
 	if err != nil {
 		return nil, errs.Wrap(err, errs.WithContext("id", id))
 	}
@@ -67,10 +66,10 @@ func searchPAAPI(ctx context.Context, id string, p *paapiParams, rawFlag bool) (
 }
 
 func findPAAPI(ctx context.Context, id string, p *paapiParams) (*entity.Book, error) {
-	return createPAAPI(ctx, p).LookupBook(id)
+	return createPAAPI(p).LookupBook(ctx, id)
 }
 
-/* Copyright 2019,2020 Spiegel
+/* Copyright 2019-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

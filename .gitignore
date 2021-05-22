@@ -14,3 +14,4 @@
 # Other files and folders
 *.bak
 dist/
+.task/

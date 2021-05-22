@@ -6,7 +6,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
-	"net/http"
 
 	"github.com/spiegel-im-spiegel/books-data/api"
 	"github.com/spiegel-im-spiegel/books-data/ecode"
@@ -20,14 +19,13 @@ import (
 type OpenBD struct {
 	svcType api.ServiceType //Service Type
 	server  *obd.Server     //server info.
-	ctx     context.Context //context
 }
 
 var _ api.API = (*OpenBD)(nil) //OpenBD is compatible with api.API interface
 
 //New returns OpenBD instance
-func New(ctx context.Context) *OpenBD {
-	return &OpenBD{svcType: api.TypeOpenBD, server: obd.New(), ctx: ctx}
+func New() *OpenBD {
+	return &OpenBD{svcType: api.TypeOpenBD, server: obd.New()}
 }
 
 //Name returns name of API
@@ -36,8 +34,8 @@ func (a *OpenBD) Name() string {
 }
 
 ///LookupRawData returns openBD raw data
-func (a *OpenBD) LookupRawData(id string) (io.Reader, error) {
-	res, err := a.server.CreateClient(obd.WithContext(a.ctx), obd.WithHttpClient(&http.Client{})).LookupBooksRaw([]string{id})
+func (a *OpenBD) LookupRawData(ctx context.Context, id string) (io.Reader, error) {
+	res, err := a.server.CreateClient().LookupBooksRawContext(ctx, []string{id})
 	if err != nil {
 		return nil, errs.New(
 			fmt.Sprintf("invalid book id: %v", id),
@@ -49,8 +47,8 @@ func (a *OpenBD) LookupRawData(id string) (io.Reader, error) {
 }
 
 ///LookupBook returns Book data from openBD
-func (a *OpenBD) LookupBook(id string) (*entity.Book, error) {
-	data, err := a.LookupRawData(id)
+func (a *OpenBD) LookupBook(ctx context.Context, id string) (*entity.Book, error) {
+	data, err := a.LookupRawData(ctx, id)
 	if err != nil {
 		return nil, errs.Wrap(err, errs.WithContext("id", id))
 	}
@@ -71,7 +69,7 @@ func (a *OpenBD) LookupBook(id string) (*entity.Book, error) {
 			URL: bd.ImageURL(),
 		},
 		ProductType:     "Book",
-		Codes:           []entity.Code{entity.Code{Name: "ISBN", Value: bd.ISBN()}},
+		Codes:           []entity.Code{{Name: "ISBN", Value: bd.ISBN()}},
 		Creators:        getCreators(bd),
 		Publisher:       bd.Publisher(),
 		PublicationDate: values.NewDate(bd.PublicationDate().Time),
@@ -104,7 +102,7 @@ func unmarshalJSON(jsondata io.Reader) (*obd.Book, error) {
 	return &books[0], nil
 }
 
-/* Copyright 2019,2020 Spiegel
+/* Copyright 2019-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -10,11 +10,10 @@ import (
 )
 
 func searchOpenBD(ctx context.Context, id string, rawFlag bool) (io.Reader, error) {
-	obdapi := openbd.New(ctx)
 	if rawFlag {
-		return obdapi.LookupRawData(id)
+		return openbd.New().LookupRawData(ctx, id)
 	}
-	book, err := obdapi.LookupBook(id)
+	book, err := openbd.New().LookupBook(ctx, id)
 	if err != nil {
 		return nil, err
 	}
@@ -26,10 +25,10 @@ func searchOpenBD(ctx context.Context, id string, rawFlag bool) (io.Reader, erro
 }
 
 func findOpenBD(ctx context.Context, id string) (*entity.Book, error) {
-	return openbd.New(ctx).LookupBook(id)
+	return openbd.New().LookupBook(ctx, id)
 }
 
-/* Copyright 2019 Spiegel
+/* Copyright 2019-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

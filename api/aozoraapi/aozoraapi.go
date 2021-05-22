@@ -5,7 +5,6 @@ import (
 	"context"
 	"fmt"
 	"io"
-	"net/http"
 	"strconv"
 
 	"github.com/spiegel-im-spiegel/aozora-api"
@@ -19,14 +18,13 @@ import (
 type AozoraAPI struct {
 	svcType api.ServiceType //Service Type
 	server  *aozora.Server  //server info.
-	ctx     context.Context //context
 }
 
 var _ api.API = (*AozoraAPI)(nil) //AozoraAPI is compatible with api.API interface
 
 //New returns OpenBD instance
-func New(ctx context.Context) *AozoraAPI {
-	return &AozoraAPI{svcType: api.TypeAozoraAPI, server: aozora.New(), ctx: ctx}
+func New() *AozoraAPI {
+	return &AozoraAPI{svcType: api.TypeAozoraAPI, server: aozora.New()}
 }
 
 //Name returns name of API
@@ -35,7 +33,7 @@ func (a *AozoraAPI) Name() string {
 }
 
 //LookupRawData returns openBD raw data
-func (a *AozoraAPI) LookupRawData(id string) (io.Reader, error) {
+func (a *AozoraAPI) LookupRawData(ctx context.Context, id string) (io.Reader, error) {
 	bookId, err := strconv.Atoi(id)
 	if err != nil {
 		return nil, errs.New(
@@ -43,7 +41,7 @@ func (a *AozoraAPI) LookupRawData(id string) (io.Reader, error) {
 			errs.WithContext("id", id),
 		)
 	}
-	b, err := a.server.CreateClient(aozora.WithContext(a.ctx), aozora.WithHttpClient(&http.Client{})).LookupBookRaw(bookId)
+	b, err := a.server.CreateClient().LookupBookRawContext(ctx, bookId)
 	if err != nil {
 		return nil, errs.Wrap(err, errs.WithContext("id", id))
 	}
@@ -51,7 +49,7 @@ func (a *AozoraAPI) LookupRawData(id string) (io.Reader, error) {
 }
 
 //LookupBook returns Book data from openBD
-func (a *AozoraAPI) LookupBook(id string) (*entity.Book, error) {
+func (a *AozoraAPI) LookupBook(ctx context.Context, id string) (*entity.Book, error) {
 	bookId, err := strconv.Atoi(id)
 	if err != nil {
 		return nil, errs.New(
@@ -60,7 +58,7 @@ func (a *AozoraAPI) LookupBook(id string) (*entity.Book, error) {
 			errs.WithContext("id", id),
 		)
 	}
-	bk, err := a.server.CreateClient(aozora.WithContext(a.ctx), aozora.WithHttpClient(&http.Client{})).LookupBook(bookId)
+	bk, err := a.server.CreateClient().LookupBookContext(ctx, bookId)
 	if err != nil {
 		return nil, errs.Wrap(err, errs.WithContext("id", id))
 	}
@@ -73,7 +71,7 @@ func (a *AozoraAPI) LookupBook(id string) (*entity.Book, error) {
 		OriginalTitle:   bk.OriginalTitle,
 		URL:             bk.CardURL,
 		ProductType:     "青空文庫",
-		Codes:           []entity.Code{entity.Code{Name: "図書カードNo.", Value: strconv.Itoa(bk.BookID)}},
+		Codes:           []entity.Code{{Name: "図書カードNo.", Value: strconv.Itoa(bk.BookID)}},
 		Creators:        getCreators(bk),
 		PublicationDate: values.NewDate(bk.ReleaseDate.Time),
 		LastRelease:     values.NewDate(bk.LastModified.Time),
@@ -103,7 +101,7 @@ func getCreators(bk *aozora.Book) []entity.Creator {
 	return creators
 }
 
-/* Copyright 2019,2020 Spiegel
+/* Copyright 2019-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.

@@ -134,7 +134,7 @@ func (i *Item) ProductType() string {
 }
 
 func (i *Item) Codes() []entity.Code {
-	codes := []entity.Code{entity.Code{Name: "ASIN", Value: i.ASIN}}
+	codes := []entity.Code{{Name: "ASIN", Value: i.ASIN}}
 	if i.ItemInfo != nil && i.ItemInfo.ExternalIds != nil {
 		ids := i.ItemInfo.ExternalIds.EANs
 		if ids != nil {
@@ -255,7 +255,7 @@ func (r *Response) String() string {
 	return string(b)
 }
 
-/* Copyright 2019,2020 Spiegel
+/* Copyright 2019-2021 Spiegel
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
