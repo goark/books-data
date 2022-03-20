@@ -4,7 +4,7 @@ import (
 	"context"
 	"io"
 
-	"github.com/spiegel-im-spiegel/books-data/entity"
+	"github.com/goark/books-data/entity"
 )
 
 //API is interface class  for searching book API

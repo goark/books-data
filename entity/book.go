@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/spiegel-im-spiegel/books-data/ecode"
-	"github.com/spiegel-im-spiegel/books-data/entity/values"
-	"github.com/spiegel-im-spiegel/books-data/format"
-	"github.com/spiegel-im-spiegel/errs"
+	"github.com/goark/books-data/ecode"
+	"github.com/goark/books-data/entity/values"
+	"github.com/goark/books-data/format"
+	"github.com/goark/errs"
 )
 
 //Code is entity class of book code

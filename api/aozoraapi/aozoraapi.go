@@ -7,11 +7,11 @@ import (
 	"io"
 	"strconv"
 
-	"github.com/spiegel-im-spiegel/aozora-api"
-	"github.com/spiegel-im-spiegel/books-data/api"
-	"github.com/spiegel-im-spiegel/books-data/entity"
-	"github.com/spiegel-im-spiegel/books-data/entity/values"
-	"github.com/spiegel-im-spiegel/errs"
+	"github.com/goark/aozora-api"
+	"github.com/goark/books-data/api"
+	"github.com/goark/books-data/entity"
+	"github.com/goark/books-data/entity/values"
+	"github.com/goark/errs"
 )
 
 //OpenBD is a api.API class for openBD API

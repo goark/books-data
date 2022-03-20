@@ -7,7 +7,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/spiegel-im-spiegel/errs"
+	"github.com/goark/errs"
 )
 
 func ByTemplateFile(obj interface{}, tmpltPath string) (*bytes.Buffer, error) {

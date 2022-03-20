@@ -6,10 +6,10 @@ import (
 	"encoding/json"
 	"io"
 
-	"github.com/spiegel-im-spiegel/books-data/api"
-	"github.com/spiegel-im-spiegel/books-data/entity"
-	"github.com/spiegel-im-spiegel/errs"
-	paapi5 "github.com/spiegel-im-spiegel/pa-api"
+	"github.com/goark/books-data/api"
+	"github.com/goark/books-data/entity"
+	"github.com/goark/errs"
+	paapi5 "github.com/goark/pa-api"
 )
 
 //PAAPI5 is a api.API class for PA-API v5

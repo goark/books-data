@@ -1,36 +1,17 @@
 package ecode
 
-import "fmt"
+import "errors"
 
-//ECode is error codes for books-data
-type ECode int
-
-const (
-	ErrNullPointer ECode = iota + 1
-	ErrNoCommand
-	ErrInvalidAPIParameter
-	ErrInvalidAPIResponse
-	ErrNoData
-	ErrUnMatchServiceType
+var (
+	ErrNullPointer         = errors.New("Null reference instance")
+	ErrNoCommand           = errors.New("No command")
+	ErrInvalidAPIParameter = errors.New("Invalid API parameters")
+	ErrInvalidAPIResponse  = errors.New("Invalid response data from API")
+	ErrNoData              = errors.New("No response data")
+	ErrUnMatchServiceType  = errors.New("Unmatch service type")
 )
 
-var errMessages = map[ECode]string{
-	ErrNullPointer:         "Null reference instance",
-	ErrNoCommand:           "No command",
-	ErrInvalidAPIParameter: "Invalid API parameters",
-	ErrInvalidAPIResponse:  "Invalid response data from API",
-	ErrNoData:              "No response data",
-	ErrUnMatchServiceType:  "Unmatch service type",
-}
-
-func (e ECode) Error() string {
-	if s, ok := errMessages[e]; ok {
-		return s
-	}
-	return fmt.Sprintf("unknown error (%d)", int(e))
-}
-
-/* Copyright 2019 Spiegel
+/* Copyright 2019-2022 Spiegel
 *
 * Licensed under the Apache License, Version 2.0 (the "License");
 * you may not use this file except in compliance with the License.

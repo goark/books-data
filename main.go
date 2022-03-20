@@ -3,8 +3,8 @@ package main
 import (
 	"os"
 
-	"github.com/spiegel-im-spiegel/books-data/facade"
-	"github.com/spiegel-im-spiegel/gocli/rwi"
+	"github.com/goark/books-data/facade"
+	"github.com/goark/gocli/rwi"
 )
 
 //go:generate go-assets-builder -p report -s="/report/assets" -o report/assets.go report/assets/

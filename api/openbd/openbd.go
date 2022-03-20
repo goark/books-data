@@ -7,12 +7,12 @@ import (
 	"fmt"
 	"io"
 
-	"github.com/spiegel-im-spiegel/books-data/api"
-	"github.com/spiegel-im-spiegel/books-data/ecode"
-	"github.com/spiegel-im-spiegel/books-data/entity"
-	"github.com/spiegel-im-spiegel/books-data/entity/values"
-	"github.com/spiegel-im-spiegel/errs"
-	obd "github.com/spiegel-im-spiegel/openbd-api"
+	"github.com/goark/books-data/api"
+	"github.com/goark/books-data/ecode"
+	"github.com/goark/books-data/entity"
+	"github.com/goark/books-data/entity/values"
+	"github.com/goark/errs"
+	obd "github.com/goark/openbd-api"
 )
 
 //OpenBD is a api.API class for openBD API

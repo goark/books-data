@@ -5,8 +5,8 @@ import (
 	"context"
 	"io"
 
-	"github.com/spiegel-im-spiegel/books-data/api/aozoraapi"
-	"github.com/spiegel-im-spiegel/books-data/entity"
+	"github.com/goark/books-data/api/aozoraapi"
+	"github.com/goark/books-data/entity"
 )
 
 func searchAozoraAPI(ctx context.Context, id string, rawFlag bool) (io.Reader, error) {
