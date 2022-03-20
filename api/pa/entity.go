@@ -5,10 +5,10 @@ import (
 	"fmt"
 	"strings"
 
-	"github.com/spiegel-im-spiegel/books-data/ecode"
-	"github.com/spiegel-im-spiegel/books-data/entity"
-	"github.com/spiegel-im-spiegel/books-data/entity/values"
-	"github.com/spiegel-im-spiegel/errs"
+	"github.com/goark/books-data/ecode"
+	"github.com/goark/books-data/entity"
+	"github.com/goark/books-data/entity/values"
+	"github.com/goark/errs"
 )
 
 type GenInfo struct {

@@ -5,12 +5,12 @@ import (
 	"context"
 	"io"
 
+	"github.com/goark/books-data/api"
+	"github.com/goark/books-data/api/pa"
+	"github.com/goark/books-data/ecode"
+	"github.com/goark/books-data/entity"
+	"github.com/goark/errs"
 	"github.com/spf13/viper"
-	"github.com/spiegel-im-spiegel/books-data/api"
-	"github.com/spiegel-im-spiegel/books-data/api/pa"
-	"github.com/spiegel-im-spiegel/books-data/ecode"
-	"github.com/spiegel-im-spiegel/books-data/entity"
-	"github.com/spiegel-im-spiegel/errs"
 )
 
 //paapiParams is parameters for PA-API

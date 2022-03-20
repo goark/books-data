@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/spiegel-im-spiegel/books-data/entity/values"
+	"github.com/goark/books-data/entity/values"
 )
 
 func TestCode(t *testing.T) {

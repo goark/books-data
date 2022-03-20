@@ -5,8 +5,8 @@ import (
 	"context"
 	"io"
 
-	"github.com/spiegel-im-spiegel/books-data/api/openbd"
-	"github.com/spiegel-im-spiegel/books-data/entity"
+	"github.com/goark/books-data/api/openbd"
+	"github.com/goark/books-data/entity"
 )
 
 func searchOpenBD(ctx context.Context, id string, rawFlag bool) (io.Reader, error) {

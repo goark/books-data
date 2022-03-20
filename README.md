@@ -1,21 +1,23 @@
 # [books-data] -- Search for Books Data
 
-[![check vulns](https://github.com/spiegel-im-spiegel/books-data/workflows/vulns/badge.svg)](https://github.com/spiegel-im-spiegel/books-data/actions)
-[![lint status](https://github.com/spiegel-im-spiegel/books-data/workflows/lint/badge.svg)](https://github.com/spiegel-im-spiegel/books-data/actions)
-[![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/spiegel-im-spiegel/books-data/master/LICENSE)
-[![GitHub release](https://img.shields.io/github/release/spiegel-im-spiegel/books-data.svg)](https://github.com/spiegel-im-spiegel/books-data/releases/latest)
+[![check vulns](https://github.com/goark/books-data/workflows/vulns/badge.svg)](https://github.com/goark/books-data/actions)
+[![lint status](https://github.com/goark/books-data/workflows/lint/badge.svg)](https://github.com/goark/books-data/actions)
+[![GitHub license](https://img.shields.io/badge/license-Apache%202-blue.svg)](https://raw.githubusercontent.com/goark/books-data/master/LICENSE)
+[![GitHub release](https://img.shields.io/github/release/goark/books-data.svg)](https://github.com/goark/books-data/releases/latest)
 
 This package is required Go 1.16 or later.
+
+**Migrated repository to [github.com/goark/books-data][books-data]**
 
 ## Build and Install
 
 ```
-$ go install github.com/spiegel-im-spiegel/books-data@latest
+$ go install github.com/goark/books-data@latest
 ```
 
 ### Binaries
 
-See [latest release](https://github.com/spiegel-im-spiegel/books-data/releases/latest).
+See [latest release](https://github.com/goark/books-data/releases/latest).
 
 ## Usage
 
@@ -414,8 +416,8 @@ $ books-data history -i 9784274069321 -t testdata/review-template/template.html
 - [DDRBoxman/go-amazon-product-api: Wrapper for the Amazon Product Advertising API](https://github.com/DDRBoxman/go-amazon-product-api)
 - [seihmd/openbd: openBD API written by Go](https://github.com/seihmd/openbd)
     - [openBDのAPIライブラリをGoでつくりました - Qiita](https://qiita.com/seihmd/items/d1f8b3b54cbc93346d78)
-- [spiegel-im-spiegel/aozora-api: APIs for Aozora-bunko RESTful Service by Golang](https://github.com/spiegel-im-spiegel/aozora-api)
+- [goark/aozora-api: APIs for Aozora-bunko RESTful Service by Golang](https://github.com/goark/aozora-api)
 
-[books-data]: https://github.com/spiegel-im-spiegel/books-data "spiegel-im-spiegel/books-data: Search for Books Data"
+[books-data]: https://github.com/goark/books-data "goark/books-data: Search for Books Data"
 [openBD]: https://openbd.jp/
 [PA-API]: https://affiliate.amazon.co.jp/assoc_credentials/home

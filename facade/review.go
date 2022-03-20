@@ -6,15 +6,15 @@ import (
 	"os"
 	"strings"
 
+	"github.com/goark/books-data/ecode"
+	"github.com/goark/books-data/entity"
+	"github.com/goark/books-data/review"
+	"github.com/goark/books-data/review/logger"
+	"github.com/goark/errs"
+	"github.com/goark/gocli/rwi"
+	"github.com/goark/gocli/signal"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
-	"github.com/spiegel-im-spiegel/books-data/ecode"
-	"github.com/spiegel-im-spiegel/books-data/entity"
-	"github.com/spiegel-im-spiegel/books-data/review"
-	"github.com/spiegel-im-spiegel/books-data/review/logger"
-	"github.com/spiegel-im-spiegel/errs"
-	"github.com/spiegel-im-spiegel/gocli/rwi"
-	"github.com/spiegel-im-spiegel/gocli/signal"
 )
 
 //newSearchCmd returns cobra.Command instance for show sub-command

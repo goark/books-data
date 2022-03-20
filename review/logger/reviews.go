@@ -6,8 +6,8 @@ import (
 	"io"
 	"os"
 
-	"github.com/spiegel-im-spiegel/books-data/review"
-	"github.com/spiegel-im-spiegel/errs"
+	"github.com/goark/books-data/review"
+	"github.com/goark/errs"
 )
 
 //Reviews is list of review.Review

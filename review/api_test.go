@@ -8,8 +8,8 @@ import (
 	"io"
 	"testing"
 
-	"github.com/spiegel-im-spiegel/books-data/api"
-	"github.com/spiegel-im-spiegel/books-data/entity"
+	"github.com/goark/books-data/api"
+	"github.com/goark/books-data/entity"
 )
 
 type testAPI struct {
